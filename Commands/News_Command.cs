@@ -21,7 +21,7 @@ namespace GameNewsBotApp.Commands
 
 
 
-        public class _1News_command : BaseCommandModule
+        public class News_command : BaseCommandModule
         {
             public class Appnews
             {
@@ -61,23 +61,33 @@ namespace GameNewsBotApp.Commands
 
             {
                 var Discord_logger_service = new Discord_Logger_service();
+                var stack_trace = new System.Diagnostics.StackTrace();
 
-                // Fetch the news data from the API
-                var response = await _httpClient.GetStringAsync(NewsApiUrl);
-                var jsonData = JObject.Parse(response);
-                var appnews = jsonData["appnews"];
-                var newsitems = appnews["newsitems"].ToObject<List<Newsitem>>();
+
 
                 try
                 {
-                    // parse the http response for steam news
-                    var
+                    var response = await _httpClient.GetStringAsync(NewsApiUrl); 
+                    var json = JObject.Parse(response);
+                    var appnews = json["appnews"].ToObject<List<Newsitem>>();
+                    //use string.join to format the news items
+                    var newsContent = 
+                        string.Join("\n\n", appnews.Select(item =>
+                        $"**Title:** {item.title}\n**Author:** {item.author}\n**Contents:** {item.contents}\n**URL:** {item.url}"));
+
+                    
+
+
+
+                    _command_News.RespondAsync(
+                        $"Here are the latest news items:\n\n{newsContent}");
 
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    Discord_logger_service.Log_Critical("Request Failed");
+                    Discord_logger_service.Log_Critical($"Request Failed{stack_trace}");
+                    ;
                     throw;
                 }
 

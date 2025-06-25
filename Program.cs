@@ -7,7 +7,7 @@ using GameNewsBotApp.Logging;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-using static GameNewsBotApp.config.Token_Reader;
+
 
 
 
@@ -30,7 +30,7 @@ namespace GameNewsBotApp
 
 
         {
-            var Discord_Logger_service = new Discord_Logger_service();
+            var Discord_Logger_service = new Logging.Logging.Discord_Logger_service();
 
 
             var Tokenprovider = new Get_Token();
@@ -95,7 +95,8 @@ namespace GameNewsBotApp
             //commands.RegisterCommands<Action_Command>();
             commands.RegisterCommands<Basic_Commands.Ping_command>();
             commands.RegisterCommands<Basic_Commands.Greet_Command>();
-            commands.RegisterCommands < NewsStyleUriParser +> ();
+            commands.RegisterCommands<Basic_Commands.Role_Command>();
+            commands.RegisterCommands<News_Command.News_command>();
 
 
 
@@ -129,7 +130,7 @@ namespace GameNewsBotApp
         private static Task Client_Ready(DiscordClient sender, ReadyEventArgs args)
         {
 
-            var Discord_Logger_service = new Discord_Logger_service();
+            var Discord_Logger_service = new Logging.Logging.Discord_Logger_service();
             var readyeventid = new EventId(10, "Online");
             var time_stamp = DateTime.Now.ToString("u");
             Discord_Logger_service.Log_information($"Client is ready and Online {time_stamp}", readyeventid);
