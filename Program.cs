@@ -97,7 +97,7 @@ namespace GameNewsBotApp
             commands.RegisterCommands<Basic_Commands.Greet_Command>();
             commands.RegisterCommands<Basic_Commands.Role_Command>();
             commands.RegisterCommands<News_Command.News_command>();
-            commands.RegisterCommands<Basic_Commands.Reminder_Command>();
+            
 
 
 

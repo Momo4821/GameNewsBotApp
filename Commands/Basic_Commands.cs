@@ -6,6 +6,8 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 
 namespace GameNewsBotApp.Commands
 {
@@ -64,40 +66,34 @@ namespace GameNewsBotApp.Commands
 
         }
 
-
-     /*   public class Reminder_Command : BaseCommandModule
+        
+        
+        
+        public class DiscordAuditLogKickEntry : DiscordAuditLogEntry
         {
-            [Command("Reminder")]
-            [Description("Set a reminder for yourself")]
-            public Task _Reminder_Command(CommandContext _Command_Reminder)
+            public DiscordMember target { get; set; }
+        }
+        
+        
+        
+        public class Kick_Command : BaseCommandModule
+        {
+            
+            private GuildMemberRemoveEventArgs args;
+
+            [Command("Kick")]
+            [Description("Kick users from Channel")]
+            public Task _Kick_Command(CommandContext _Command_Kick)
             {
+             
+               DiscordMember target = _Command_Kick.Member;
+                
+                _Command_Kick.RespondAsync($"User {_Command_Kick.User}has been kicked from server");
 
-                //timer for reminder
-                var reminderTime = TimeSpan.FromMinutes(15) // Set reminder for 15 minute later//remindfer for 4 days
-                    .Add(TimeSpan.FromHours(6)) //add 6 hours
-                    .Add(TimeSpan.FromMinutes(30)) //add 30 minutes
-                    .Add(TimeSpan.FromDays(7)); //days
-                                                //user sets reminder for 7 days later
-                                                var reminderMessage = $"Reminder set for {_Command_Reminder.User.Username} in {reminderTime.TotalMinutes} minutes!";
-                                                _Command_Reminder.RespondAsync(reminderMessage);
-                                                //remove remin
-
-
-                return Task.CompletedTask;
-            }*/
-
-      /*      public class othercommands : BaseCommandModule
-
-            {
-        [Command("Say")]
-            public async Task Say(string choice)
-            {
-               
+            return Task.CompletedTask;
             }
-
-
-            }*/
+        }
+    
             
         }
     }
-}
