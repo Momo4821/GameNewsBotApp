@@ -20,13 +20,12 @@ namespace GameNewsBotApp.Logging
         public class Discord_Logger_service
         {
             private readonly ILogger _logger;
-
             public Discord_Logger_service()
             {
                 var loggerfactory = LoggerFactory.Create(builder =>
-                {
-
-                    builder.AddConsole();
+                {   builder.AddConsole();
+                    builder.SetMinimumLevel(LogLevel.Information);
+                  
                 });
 
                 _logger = loggerfactory.CreateLogger<Discord_Logger_service>();
@@ -35,25 +34,29 @@ namespace GameNewsBotApp.Logging
 
 
             }
+            
+            
 
             public void Log_information(string message, EventId eventinfo)
             {
-
+                eventinfo = new EventId(10,"Starting");
                 _logger.LogInformation(eventinfo, message);
 
 
             }
 
 
-            public void Log_Error(string message)
+            public void Log_Error(string message, EventId eventinfo)
             {
-
+                eventinfo = new EventId(40,"Error");
                 _logger.LogError(message);
             }
 
 
-            public void Log_Critical(string message)
+            public void Log_Critical(string message, EventId eventinfo)
             {
+                
+                eventinfo = new EventId(50,"Critical");
                 _logger.LogCritical(message);
 
 
@@ -61,12 +64,20 @@ namespace GameNewsBotApp.Logging
             }
 
 
-            public void Log_Warning(string message)
+            public void Log_Warning(string message, EventId eventinfo)
 
             {
-
+                eventinfo = new EventId(8,"Warning");
 
                 _logger.LogWarning(message);
+            }
+
+            public void Log_Debug(string message, EventId eventinfo)
+            {
+                eventinfo = new EventId(5,"Debug");
+                _logger.LogDebug(message,eventinfo);
+                
+                
             }
 
 

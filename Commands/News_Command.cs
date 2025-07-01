@@ -1,6 +1,6 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using GameNewsBotApp.Logging;
+//using GameNewsBotApp.Logging;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using System.Web.UI.WebControls;
-using static GameNewsBotApp.Logging.Logging;
+//using static GameNewsBotApp.Logging.Logging;
 
 namespace GameNewsBotApp.Commands
 {
@@ -72,7 +72,7 @@ namespace GameNewsBotApp.Commands
             public async Task News_Command(CommandContext _command_News)
 
             {
-                var Discord_logger_service = new Discord_Logger_service();
+              //  var Discord_logger_service = new Discord_Logger_service();
                 var stack_trace = new System.Diagnostics.StackTrace();
 
 

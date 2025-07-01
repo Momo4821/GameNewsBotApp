@@ -3,9 +3,10 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
 using GameNewsBotApp.Commands;
 using GameNewsBotApp.config;
-using GameNewsBotApp.Logging;
+//using GameNewsBotApp.Logging;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 
 
@@ -27,8 +28,6 @@ namespace GameNewsBotApp
         private static CommandsNextExtension commands { get; set; }
 
         static async Task Main(string[] args)
-
-
         {
             var Discord_Logger_service = new Logging.Logging.Discord_Logger_service();
 
@@ -36,47 +35,34 @@ namespace GameNewsBotApp
             var Tokenprovider = new Get_Token();
             var token = Tokenprovider?.token;
             var todelete = new Get_Token().delete;
-            Environment.SetEnvironmentVariable("BOT_TOKEN", "Token");
+            Environment.SetEnvironmentVariable("BOT_TOKEN", "Token"); //Bot Token set for security
             if (string.IsNullOrEmpty(token))
             {
 
-                Discord_Logger_service.Log_Error("String is Empty");
+                //Discord_Logger_service.Log_Error("String is Empty");
 
-                return; //application exit if token is null/empty
+                return; 
 
             }
-
-
-            /*
-                        var jsonreader = new JSONReader();
-                        await jsonreader.ReadJson();*/
-
-
-
-
-
-            /* var token_bot = new JSONReader().Get_Token;*/
-
-
+            
+            
+          
+            
             var discordconifig = new DiscordConfiguration()
             {
 
                 Intents = DiscordIntents.All,
                 Token = token,
                 TokenType = TokenType.Bot,
-                AutoReconnect = true
-
-
-
-
+                AutoReconnect = true,
+              MinimumLogLevel = LogLevel.Information,
+                
             };
 
             Client = new DiscordClient(discordconifig);
 
             Client.Ready += Client_Ready;
-
-
-
+            
             //setup commands
             var Discord_Bot_Commands = new CommandsNextConfiguration()
             {
@@ -86,6 +72,8 @@ namespace GameNewsBotApp
                 EnableDms = true,
                 EnableDefaultHelp = true,
                 DmHelp = true,
+                
+                
 
 
 
@@ -97,45 +85,21 @@ namespace GameNewsBotApp
             commands.RegisterCommands<Basic_Commands.Greet_Command>();
             commands.RegisterCommands<Basic_Commands.Role_Command>();
             commands.RegisterCommands<News_Command.News_command>();
-            
-
-
-
-
-
-
-
-
-
-
+            commands.RegisterCommands<Basic_Commands.Kick_Command>();
+           
             await Client.ConnectAsync();
             await Task.Delay(-1);
 
-
-
-            ;
-
-
-
-
-
         }
-
-
-
-
-
-
-
-
+        
         private static Task Client_Ready(DiscordClient sender, ReadyEventArgs args)
         {
 
+       
             var Discord_Logger_service = new Logging.Logging.Discord_Logger_service();
-            var readyeventid = new EventId(10, "Online");
             var time_stamp = DateTime.Now.ToString("u");
-            Discord_Logger_service.Log_information($"Client is ready and Online {time_stamp}", readyeventid);
-
+            /*Discord_Logger_service.Log_information($"Client is ready and Online", time_stamp);*/
+            Discord_Logger_service.Log_information("Client is Ready", new EventId(10, "Ready") );
 
             /* string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                  "C:\\Users\\malan\\tesfolder");
