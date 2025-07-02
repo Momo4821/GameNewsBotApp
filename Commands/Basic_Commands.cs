@@ -3,8 +3,10 @@ using DSharpPlus.CommandsNext.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.Remoting.Contexts;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -65,8 +67,10 @@ namespace GameNewsBotApp.Commands
             public Task _Role_Command(CommandContext _Command_Role)
             {
 
-               //get roles
-               u
+               //get guild id
+               
+               //take guild id dispaly roles in guild wiht commmand
+                var guild_id = 
                
                 
                 return Task.CompletedTask;
@@ -79,21 +83,57 @@ namespace GameNewsBotApp.Commands
 
         public class Kick_Command : BaseCommandModule
         {
+            public static
+
          
             private GuildMemberRemoveEventArgs args;
            
             [Command("Kick")]
             [Description("Kick users from Channel")]
-            public async Task _Kick_Command(CommandContext _Command_Kick)
+            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member)
             {
-                var Discord_logger = new Logging.Logging.Discord_Logger_service();
+
+
                 
-                args.Member.RemoveAsync(reason: "You have violated the rules of this channel");
-                        //send dm
-                     var dm = await _Command_Kick.Guild.GetMemberAsync(args.Member.Id);
-                    await dm.RemoveAsync(_Command_Kick.User.Mention);
-                     await dm.SendMessageAsync("Hey There you have been kicked");
-                     Discord_logger.Log_information("user has been kicked",new EventId(89));
+
+
+
+                var logger = new Logging.Logging.Discord_Logger_service();
+                //check if user has permission to kick
+                if (!_Command_Kick.Member.Permissions.HasPermission(Permissions.KickMembers))
+                {
+                    await _Command_Kick.RespondAsync("You do not have permission to kick members.");
+                    logger.Log_information("User does not have permission to kick members", new EventId(88));
+                    return;
+
+
+                    try
+                    {
+                        await member.SendMessageAsync($"You have been kicked from the {_Command_Kick.Guild.Name}");
+                    }
+                    catch
+                    {
+                       
+                    }
+
+
+
+                    await member.RemoveAsync(reason:"You have Broken the rules");
+                    await _Command_Kick.RespondAsync($"{member.Mention} has been kicked.
+                    logger.Log_information($"User {member.Mention} has been kicked from the server.", new EventId(89));
+
+                }
+
+
+
+                /* var Discord_logger = new Logging.Logging.Discord_Logger_service();
+
+                 args.Member.RemoveAsync(reason: "You have violated the rules of this channel");
+                         //send dm
+                      var dm = await _Command_Kick.Guild.GetMemberAsync(args.Member.Id);
+                     await dm.RemoveAsync(_Command_Kick.User.Mention);
+                      await dm.SendMessageAsync("Hey There you have been kicked");
+                      Discord_logger.Log_information("user has been kicked",new EventId(89));*/
 
 
             }
