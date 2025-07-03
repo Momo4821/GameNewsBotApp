@@ -83,8 +83,16 @@ namespace GameNewsBotApp.Commands
 
         public class Kick_Command : BaseCommandModule
         {
-            public static
+            public static readonly List<string> Kick_reasons = new List<string>
+            {
+                "You have violated the rules of this channel",
+                "You have been kicked for spamming",
+                "You have been kicked for being rude",
+                "You have been kicked for being toxic",
+                "You have been kicked for being disrespectful",
+                "You have been kicked for being a troll",
 
+            };
          
             private GuildMemberRemoveEventArgs args;
            
@@ -102,27 +110,26 @@ namespace GameNewsBotApp.Commands
                 //check if user has permission to kick
                 if (!_Command_Kick.Member.Permissions.HasPermission(Permissions.KickMembers))
                 {
-                    await _Command_Kick.RespondAsync("You do not have permission to kick members.");
+                    await member.SendMessageAsync("You do not have permission to kick members.");
                     logger.Log_information("User does not have permission to kick members", new EventId(88));
                     return;
 
+                    //only send message to user in dm 
 
-                    try
+
+
+                    //specificy member to kick
+                    if (member == null)
                     {
-                        await member.SendMessageAsync($"You have been kicked from the {_Command_Kick.Guild.Name}");
-                    }
-                    catch
-                    {
-                       
+                        await _Command_Kick.RespondAsync("Please specify a member to kick.");
+                        logger.Log_information("No member specified for kick command", new EventId(87));
+                        return;
                     }
 
-
-
-                    await member.RemoveAsync(reason:"You have Broken the rules");
-                    await _Command_Kick.RespondAsync($"{member.Mention} has been kicked.
-                    logger.Log_information($"User {member.Mention} has been kicked from the server.", new EventId(89));
 
                 }
+
+             
 
 
 

@@ -25,7 +25,8 @@ namespace GameNewsBotApp.Logging
                 var loggerfactory = LoggerFactory.Create(builder =>
                 {   builder.AddConsole();
                     builder.SetMinimumLevel(LogLevel.Information);
-                  
+                    builder.AddFilter("Gamenewsbot", LogLevel.Information);
+
                 });
 
                 _logger = loggerfactory.CreateLogger<Discord_Logger_service>();

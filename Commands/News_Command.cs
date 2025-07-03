@@ -80,7 +80,7 @@ namespace GameNewsBotApp.Commands
                 if (_command_News.Channel.Id !=
                     ChannelId_News) //ONLY WANT TO SEND TO NEWS CHANNEL BECUASE DON'T SPAM OTHER GENERAL CHANNELS 
                 {
-                    await _command_News.RespondAsync("Inccorect Channel");
+                    //nothing happens if the command is not in the news channel
                 }
                 else
                 {
