@@ -9,6 +9,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 using DSharpPlus;
@@ -98,7 +99,7 @@ namespace GameNewsBotApp.Commands
 
             [Command("Kick")]
             [Description("Kick users from Channel")]
-            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, int reason_indxed = -6)
+            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, int reason_indxed = -1)
             {
 
                 var logger = new Logging.Logging.Discord_Logger_service();
@@ -110,6 +111,7 @@ namespace GameNewsBotApp.Commands
                     //only send message to user in dm 
 
                 }
+
                 if (member == null)
                 {
                     await _Command_Kick.RespondAsync("Please specify a member to kick.");
@@ -133,30 +135,31 @@ namespace GameNewsBotApp.Commands
                 }
 
 
-                string reason = Kick_reasons.AsReadOnly()[reason_indxed];
-                if (reason_indxed + 1 < 0 || reason_indxed >= Kick_reasons.Count)
+                if (reason_indxed < 0 || reason_indxed >= Kick_reasons.Count)
 
                 {
                     var reasonsList = string.Join("\n", Kick_reasons.Select((r, i) => $"{i}: {r}"));
                     await _Command_Kick.RespondAsync(
-                        $"Invalid reason index. Please choose a valid reason from the list:\n{reasonsList}");
+                        $"Invalid reason index. Please choose a valid reason from the list:");
                     logger.Log_information("Invalid reason index for kick command", new EventId(85));
                     return;
 
                 }
 
 
+                string reason = Kick_reasons[reason_indxed];
                 try
                 {
                     await member.SendMessageAsync($"You have been kicked for the following reason {reason}");
+                    await member.
 
                 }
 
 
-                catch 
+                catch
                 {
 
-                //nothing happens
+                    //nothing happens
                 }
 
 
@@ -170,9 +173,36 @@ namespace GameNewsBotApp.Commands
 
             }
 
-            }
+
+
+
+
         }
     }
+
+
+
+    public string 
+
+    public class Ban_Command : BaseCommandModule
+    {
+        [Command("Ban")]
+        [Description("Ban users from Channel")]
+        public async Task _Ban_Command(CommandContext _Command_Ban, DiscordMember Member, DiscordAuditLogBotAddEntry _Discord_auditLog)
+        {
+
+            var logger = new Logging.Logging.Discord_Logger_service();
+
+            
+           
+
+            
+            
+        }
+
+    }
+
+}
 
 
 

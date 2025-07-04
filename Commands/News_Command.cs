@@ -22,15 +22,27 @@ namespace GameNewsBotApp.Commands
 
 
 
-    //string formate
+   //create a template for users to create http commands
+   public static T echo<T>(T value)
+    {
+        return value;
+    }
 
 
-
-
-    internal class News_Command
+internal class News_Command
     {
 
 
+        public class Newsitem // created a class for the news item to deserialize the JSON response
+            // from the Steam API
+            // each property corresponds to a field in the JSON response
+        {
+            public string title { get; set; }
+            public string url { get; set; }
+            public string author { get; set; }
+            public string contents { get; set; }
+
+        }
 
 
 
@@ -42,21 +54,6 @@ namespace GameNewsBotApp.Commands
 
         public class News_command : BaseCommandModule
         {
-
-
-            public class Newsitem // created a class for the news item to deserialize the JSON response
-                // from the Steam API
-                // each property corresponds to a field in the JSON response
-            {
-                public string title { get; set; }
-                public string url { get; set; }
-                public string author { get; set; }
-                public string contents { get; set; }
-
-            }
-
-
-
             private static readonly HttpClient
                 _httpClient =
                     new HttpClient(); // HttpClient instance to make requests to the Steam API. URL will be the same for this call
@@ -98,7 +95,11 @@ namespace GameNewsBotApp.Commands
                         //use string.join to format the news items
                         var newsContent = // Format the news items into a string for display
                             string.Join("\n\n", appnews.Select(item =>
-                                $"**Title:** {item.title}\n**Author:** {item.author}\n**Contents:** {item.contents}\n**URL:** {item.url}"));
+                                $"**Title:** " +
+                                $"{item.title}\n**Author:** " +
+                                $"{item.author}\n**Contents:** " +
+                                $"{item.contents}\n**URL:** " +
+                                $"{item.url}"));
 
 
 
