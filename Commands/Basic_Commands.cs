@@ -98,7 +98,7 @@ namespace GameNewsBotApp.Commands
 
             [Command("Kick")]
             [Description("Kick users from Channel")]
-            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, int reason_indxed = -1)
+            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, int reason_indxed = -6)
             {
 
                 var logger = new Logging.Logging.Discord_Logger_service();
@@ -110,78 +110,63 @@ namespace GameNewsBotApp.Commands
                     //only send message to user in dm 
 
                 }
+                if (member == null)
+                {
+                    await _Command_Kick.RespondAsync("Please specify a member to kick.");
+                    logger.Log_information("No member specified for kick command", new EventId(87));
 
-                string reason = Kick_reasons[reason_indxed];
+
+
+                }
+
+
+                if (member.IsBot)
+                {
+                    await member.SendMessageAsync("This Memeber is a bot. You can't kick a bot");
+
+                }
+
+                if (member.Id == _Command_Kick.Member.Id)
+                {
+                    await member.SendMessageAsync("You cannot kick yourself.");
+                    logger.Log_information("User tried to kick themselves", new EventId(86));
+                }
+
+
+                string reason = Kick_reasons.AsReadOnly()[reason_indxed];
+                if (reason_indxed + 1 < 0 || reason_indxed >= Kick_reasons.Count)
+
+                {
+                    var reasonsList = string.Join("\n", Kick_reasons.Select((r, i) => $"{i}: {r}"));
+                    await _Command_Kick.RespondAsync(
+                        $"Invalid reason index. Please choose a valid reason from the list:\n{reasonsList}");
+                    logger.Log_information("Invalid reason index for kick command", new EventId(85));
+                    return;
+
+                }
+
 
                 try
                 {
                     await member.SendMessageAsync($"You have been kicked for the following reason {reason}");
 
-                    try
-                    {
-                        if (member == null)
-                        {
-                            await _Command_Kick.RespondAsync("Please specify a member to kick.");
-                            logger.Log_information("No member specified for kick command", new EventId(87));
-
-
-
-                        }
-
-
-                        if (member.IsBot)
-                        {
-                            await _Command_Kick.RespondAsync("This Memeber is a bot. You can't kick a bot");
-
-                        }
-
-                        if (member == _Command_Kick.Member)
-                        {
-                            await member.SendMessageAsync("You cannot kick yourself.");
-                            logger.Log_information("User tried to kick themselves", new EventId(86));
-                        }
-
-                        if (member != member.Guild.CurrentMember)
-                        {
-
-                            await member.SendMessageAsync(
-                                "You cannot kick a member that is not in the same guild as you.");
-                            logger.Log_information("User tried to kick a member not in the same guild",
-                                new EventId(85));
-
-                        }
-
-
-                        if (reason_indxed < 0 || reason_indxed >= Kick_reasons.Count)
-
-                        {
-                            var reasonsList = string.Join("\n", Kick_reasons.Select((r, i) => $"{i}: {r}"));
-                            await _Command_Kick.RespondAsync(
-                                $"Invalid reason index. Please choose a valid reason from the following list:\n{reasonsList}");
-                        }
-
-
-
-                    }
-                    catch (Exception ex)
-                    {
-                        await _Command_Kick.RespondAsync($"An error has occured trying to kick member{ex.Message}");
-                        logger.Log_Error($"An error has occured trying to kick member: {ex.Message}", new EventId(83));
-                    }
-
-
                 }
+
+
                 catch 
                 {
 
                 //nothing happens
                 }
-                
-                    //specificy member to kick
 
 
-                    await member.RemoveAsync($"you ahve been kicked for the following reasons{reason}");
-                    logger.Log_information($"{_Command_Kick.} has been kicked");
+                await member.RemoveAsync($"you have been kicked for the following reasons{reason}");
+                logger.Log_information($"{member.DisplayName} has been kicked", new EventId(8492));
+
+                //specificy member to kick
+
+
+
 
             }
 
