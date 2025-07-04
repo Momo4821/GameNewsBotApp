@@ -151,8 +151,7 @@ namespace GameNewsBotApp.Commands
                 try
                 {
                     await member.SendMessageAsync($"You have been kicked for the following reason {reason}");
-                    await member.
-
+                  
                 }
 
 
@@ -170,9 +169,7 @@ namespace GameNewsBotApp.Commands
 
 
 
-
             }
-
 
 
 
@@ -182,7 +179,56 @@ namespace GameNewsBotApp.Commands
 
 
 
-    public string 
+
+    public class _Kick_Rules : BaseCommandModule
+
+    {
+        [Command("!kickRules")] 
+        [Description("Display the rules for kicking users")]
+
+
+
+
+        public Task _Kick_Rules_Command(CommandContext _Command_Kick_Rules, DiscordMember _memeber)
+
+
+        {
+            var rules = new StringBuilder();
+            rules.AppendLine("**Kick Rules:**");
+            rules.AppendLine("1. You must have permission to kick members.");
+            rules.AppendLine("2. You cannot kick yourself.");
+            rules.AppendLine("3. You cannot kick bots.");
+            rules.AppendLine("4. Specify a valid reason for kicking.");
+            rules.AppendLine("5. Use the command as follows: `!kick @member reason_index`");
+
+         return Task.CompletedTask;
+        }
+    }
+
+
+
+    public class _Invite_Join : BaseCommandModule
+    {
+        public Task _Invite_Join_command(CommandContext _Invite_Join, DiscordChannel _channel,
+            DiscordAuditLogBanEntry _Logentry)
+
+        {
+
+           
+
+
+
+
+
+            return Task.CompletedTask;
+        }        
+
+
+
+    }
+
+
+
 
     public class Ban_Command : BaseCommandModule
     {
@@ -195,7 +241,7 @@ namespace GameNewsBotApp.Commands
 
             
            
-
+            
             
             
         }

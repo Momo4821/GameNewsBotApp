@@ -23,10 +23,8 @@ namespace GameNewsBotApp.Commands
 
 
    //create a template for users to create http commands
-   public static T echo<T>(T value)
-    {
-        return value;
-    }
+ 
+ 
 
 
 internal class News_Command
