@@ -25,7 +25,11 @@ namespace GameNewsBotApp.Logging
                 var loggerfactory = LoggerFactory.Create(builder =>
                 {   builder.AddConsole();
                     builder.SetMinimumLevel(LogLevel.Information);
-                    builder.AddFilter("Gamenewsbot", LogLevel.Information);
+                    builder.AddFilter("Information", LogLevel.Information);
+                    builder.AddFilter("Debug", LogLevel.Debug);
+                    builder.AddFilter("Critcal", LogLevel.Critical);
+                    builder.AddFilter("Warning", LogLevel.Warning);
+                    builder.AddFilter("Error", LogLevel.Error);
 
                 });
 
