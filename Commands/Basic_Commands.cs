@@ -151,7 +151,7 @@ namespace GameNewsBotApp.Commands
                 try
                 {
                     await member.SendMessageAsync($"You have been kicked for the following reason {reason}");
-                  
+
                 }
 
 
@@ -175,81 +175,98 @@ namespace GameNewsBotApp.Commands
 
 
         }
-    }
 
 
 
 
-    public class _Kick_Rules : BaseCommandModule
 
-    {
-        [Command("!kickRules")] 
-        [Description("Display the rules for kicking users")]
-
-
-
-
-        public Task _Kick_Rules_Command(CommandContext _Command_Kick_Rules, DiscordMember _memeber)
-
-
+        public class Kick_Rules : BaseCommandModule
         {
-            var rules = new StringBuilder();
-            rules.AppendLine("**Kick Rules:**");
-            rules.AppendLine("1. You must have permission to kick members.");
-            rules.AppendLine("2. You cannot kick yourself.");
-            rules.AppendLine("3. You cannot kick bots.");
-            rules.AppendLine("4. Specify a valid reason for kicking.");
-            rules.AppendLine("5. Use the command as follows: `!kick @member reason_index`");
+            [Command("!kickRules")]
+            [Description("Display the rules for kicking users")]
 
-         return Task.CompletedTask;
-        }
-    }
+            public Task Kick_Rules_Command(CommandContext _Command_Kick_Rules, DiscordMember _memeber)
+            {
 
 
+                var rules = new StringBuilder();
+                rules.AppendLine("**Kick Rules:**");
+                rules.AppendLine("1. You must have permission to kick members.");
+                rules.AppendLine("2. You cannot kick yourself.");
+                rules.AppendLine("3. You cannot kick bots.");
+                rules.AppendLine("4. Specify a valid reason for kicking.");
+                rules.AppendLine("5. Use the command as follows: `!kick @member reason_index`");
+                rules.ToString();
 
-    public class _Invite_Join : BaseCommandModule
-    {
-        public Task _Invite_Join_command(CommandContext _Invite_Join, DiscordChannel _channel,
-            DiscordAuditLogBanEntry _Logentry)
+                string rules_message = rules.ToString();
 
-        {
+                if (_memeber.Permissions.HasPermission(Permissions.KickMembers))
+                {
+                    _memeber.SendMessageAsync(rules_message);
+                }
+                else
+                {
+                    _Command_Kick_Rules.RespondAsync("You do not have permission to view the kick rules.");
 
-           
-
-
-
-
-
-            return Task.CompletedTask;
-        }        
+                }
 
 
-
-    }
-
+                
+                return Task.CompletedTask;
+            }
 
 
 
-    public class Ban_Command : BaseCommandModule
-    {
-        [Command("Ban")]
-        [Description("Ban users from Channel")]
-        public async Task _Ban_Command(CommandContext _Command_Ban, DiscordMember Member, DiscordAuditLogBotAddEntry _Discord_auditLog)
-        {
 
-            var logger = new Logging.Logging.Discord_Logger_service();
-
-            
-           
-            
-            
-            
         }
 
+
+
+        public class _Invite_Join : BaseCommandModule
+        {
+            public Task _Invite_Join_command(CommandContext _Invite_Join, DiscordChannel _channel,
+                DiscordAuditLogBanEntry _Logentry)
+
+            {
+
+
+
+
+
+
+
+                return Task.CompletedTask;
+            }
+
+
+
+        }
+
+
+
+
+        public class Ban_Command : BaseCommandModule
+        {
+            [Command("Ban")]
+            [Description("Ban users from Channel")]
+            public async Task _Ban_Command(CommandContext _Command_Ban, DiscordMember Member,
+                DiscordAuditLogBotAddEntry _Discord_auditLog)
+            {
+
+                var logger = new Logging.Logging.Discord_Logger_service();
+
+
+
+
+
+
+            }
+
+        }
+
     }
+
+
+
 
 }
-
-
-
-

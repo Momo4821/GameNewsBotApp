@@ -86,6 +86,8 @@ namespace GameNewsBotApp
             commands.RegisterCommands<Basic_Commands.Role_Command>();
             commands.RegisterCommands<News_Command.News_command>();
             commands.RegisterCommands<Basic_Commands.Kick_Command>();
+            commands.RegisterCommands<News_Command.Marvel_rivals>();
+            commands.RegisterCommands<Basic_Commands.Kick_Rules>();
 
             await Client.ConnectAsync();
             await Task.Delay(-1);
