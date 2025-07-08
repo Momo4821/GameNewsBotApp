@@ -55,8 +55,10 @@ namespace GameNewsBotApp
                 Token = token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-              MinimumLogLevel = LogLevel.Information,
-                
+              MinimumLogLevel = LogLevel.Trace,
+                LogTimestampFormat = "yyyy-MM-dd HH:mm:ss",
+                MessageCacheSize = 1000,
+              
             };
 
             Client = new DiscordClient(discordconifig);
@@ -72,6 +74,7 @@ namespace GameNewsBotApp
                 EnableDms = true,
                 EnableDefaultHelp = true,
                 DmHelp = true,
+                
                 
                 
 
