@@ -1,10 +1,12 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Contexts;
 using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography.X509Certificates;
@@ -12,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using Discord.Interactions;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
@@ -99,7 +102,7 @@ namespace GameNewsBotApp.Commands
 
             [Command("Kick")]
             [Description("Kick users from Channel")]
-            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, int reason_indxed = -1)
+            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member,DiscordChannel _Channel, int reason_indxed = -1)
             {
 
                 var logger = new Logging.Logging.Discord_Logger_service();
@@ -135,6 +138,7 @@ namespace GameNewsBotApp.Commands
                 }
 
 
+                
                 if (reason_indxed < 0 || reason_indxed >= Kick_reasons.Count)
 
                 {
@@ -162,8 +166,19 @@ namespace GameNewsBotApp.Commands
                 }
 
 
-                await member.RemoveAsync($"you have been kicked for the following reasons{reason}");
-                logger.Log_information($"{member.DisplayName} has been kicked", new EventId(8492));
+                
+                if (_Channel.IsPrivate == _Command_Kick.Channel.IsPrivate)
+                {
+
+                    await member.RemoveAsync($"You have kicked{member.DisplayName} from {_Channel.Guild.Name} for the following reasons {reason}");
+                    logger.Log_information($"{member.DisplayName} has been kicked {reason}", new EventId(8492));
+                }
+                else
+                {
+                    //nothign happens only kicks can happen in private dm 
+                }
+
+               
 
                 //specificy member to kick
 
@@ -224,11 +239,12 @@ namespace GameNewsBotApp.Commands
 
         public class _Invite_Join : BaseCommandModule
         {
+
+
             public Task _Invite_Join_command(CommandContext _Invite_Join, DiscordChannel _channel,
                 DiscordAuditLogBanEntry _Logentry)
 
             {
-
 
 
 
@@ -246,14 +262,46 @@ namespace GameNewsBotApp.Commands
 
 
         public class Ban_Command : BaseCommandModule
+
+
+
         {
+
+           
+
             [Command("Ban")]
             [Description("Ban users from Channel")]
             public async Task _Ban_Command(CommandContext _Command_Ban, DiscordMember Member,
                 DiscordAuditLogBotAddEntry _Discord_auditLog)
             {
 
+
+
+
+
+             var mybutton = new DiscordButtonComponent(ButtonStyle.Primary,
+                 
+                 "BanButton",
+                 "Ban User"
+
+
+             );
+
+
+                var discordmembers = new Members(_Command_Ban.Guild.Members.Values.ToList());
+
+
+                var builder = new DiscordMessageBuilder()
+                    .WithContent("Are you sure you want to ban this user?")
+                    .AddComponents(mybutton)
+                    .AddMentions(_Command_Ban.Member.Guild.)
+                    ;
+
+
+
                 var logger = new Logging.Logging.Discord_Logger_service();
+
+
 
 
 

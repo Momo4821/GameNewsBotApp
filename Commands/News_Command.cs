@@ -76,7 +76,7 @@ namespace GameNewsBotApp.Commands
                             "This command can only be used in the designated news channel.");
                         return;
                     }
-                    _command_News.RespondAsync(news_Content);
+                   await _command_News.RespondAsync(news_Content);
               
                 }
                 catch (Exception e)
@@ -132,9 +132,9 @@ namespace GameNewsBotApp.Commands
                     foreach (JsonElement url in newsItems.EnumerateArray())
                     {
 
-                        _command_Marvel.RespondAsync(
+                     await  _command_Marvel.RespondAsync(
                             $"**Title:** {url.GetProperty("title").GetString()}\n**URL:** {url.GetProperty("url").GetString()}");
-                        _member.SendMessageAsync($"{url.GetProperty("Title")} \n {url.GetProperty("url")}");
+                       await _member.SendMessageAsync($"{url.GetProperty("Title")} \n {url.GetProperty("url")}");
                     }
 
 
