@@ -114,7 +114,7 @@ namespace GameNewsBotApp.Commands
 
             [Command("Marvel")]
             [Description("Marvel Rivals News Command that gets the latest news from Marvel Rivals")]
-            public async Task Marvel_Command(CommandContext _command_Marvel, DiscordMember _member)
+            public async Task Marvel_Command(CommandContext _command_Marvel)
             {
                 var response = await _httpClient.GetStringAsync(
                     "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=2767030&count=3&maxlength=300&format=json");
