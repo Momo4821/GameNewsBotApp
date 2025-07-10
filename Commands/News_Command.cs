@@ -134,10 +134,10 @@ namespace GameNewsBotApp.Commands
 
                      await  _command_Marvel.RespondAsync(
                             $"**Title:** {url.GetProperty("title").GetString()}\n**URL:** {url.GetProperty("url").GetString()}");
-                       await _member.SendMessageAsync($"{url.GetProperty("Title")} \n {url.GetProperty("url")}");
+                       
                     }
 
-
+                   
 
                 }
             }
