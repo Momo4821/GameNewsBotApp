@@ -102,7 +102,8 @@ namespace GameNewsBotApp.Commands
 
             [Command("Kick")]
             [Description("Kick users from Channel")]
-            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member,DiscordChannel _Channel, int reason_indxed = -1)
+            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, DiscordChannel _Channel,
+                int reason_indxed = -1)
             {
 
                 var logger = new Logging.Logging.Discord_Logger_service();
@@ -138,7 +139,7 @@ namespace GameNewsBotApp.Commands
                 }
 
 
-                
+
                 if (reason_indxed < 0 || reason_indxed >= Kick_reasons.Count)
 
                 {
@@ -166,11 +167,12 @@ namespace GameNewsBotApp.Commands
                 }
 
 
-                
+
                 if (_Channel.IsPrivate == _Command_Kick.Channel.IsPrivate)
                 {
 
-                    await member.RemoveAsync($"You have kicked{member.DisplayName} from {_Channel.Guild.Name} for the following reasons {reason}");
+                    await member.RemoveAsync(
+                        $"You have kicked{member.DisplayName} from {_Channel.Guild.Name} for the following reasons {reason}");
                     logger.Log_information($"{member.DisplayName} has been kicked {reason}", new EventId(8492));
                 }
                 else
@@ -178,7 +180,7 @@ namespace GameNewsBotApp.Commands
                     //nothign happens only kicks can happen in private dm 
                 }
 
-               
+
 
                 //specificy member to kick
 
@@ -226,7 +228,7 @@ namespace GameNewsBotApp.Commands
                 }
 
 
-                
+
                 return Task.CompletedTask;
             }
 
@@ -267,7 +269,7 @@ namespace GameNewsBotApp.Commands
 
         {
 
-           
+
 
             [Command("Ban")]
             [Description("Ban users from Channel")]
@@ -279,42 +281,13 @@ namespace GameNewsBotApp.Commands
 
 
 
-             var mybutton = new DiscordButtonComponent(ButtonStyle.Primary,
-                 
-                 "BanButton",
-                 "Ban User"
-
-
-             );
-
-
-                var discordmembers = new Members(_Command_Ban.Guild.Members.Values.ToList());
-
-
-                var builder = new DiscordMessageBuilder()
-                    .WithContent("Are you sure you want to ban this user?")
-                    .AddComponents(mybutton)
-                    .AddMentions(_Command_Ban.Member.Guild.)
-                    ;
-
-
-
-                var logger = new Logging.Logging.Discord_Logger_service();
-
-
-
-
-
-
-
 
             }
 
         }
 
+
+
+
     }
-
-
-
-
 }
