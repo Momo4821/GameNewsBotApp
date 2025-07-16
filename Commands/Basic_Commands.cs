@@ -241,14 +241,21 @@ namespace GameNewsBotApp.Commands
 
         public class _Invite_Join : BaseCommandModule
         {
-
-
+            [Command("Join")]
+            [Description("Invite to join the channel.")]
+            
             public Task _Invite_Join_command(CommandContext _Invite_Join, DiscordChannel _channel,
-                DiscordAuditLogBanEntry _Logentry)
-
+                DiscordAuditLogBanEntry _Logentry, DiscordMember _member, DiscordGuild _guild)
             {
 
-
+             
+                //craete invite link
+                
+                _guild.GetInvite();
+                
+                
+                
+    
 
 
 
@@ -266,21 +273,59 @@ namespace GameNewsBotApp.Commands
         public class Ban_Command : BaseCommandModule
 
 
-
         {
-
-
+            private ulong ban_Channel = 1394896421211209799;
 
             [Command("Ban")]
             [Description("Ban users from Channel")]
             public async Task _Ban_Command(CommandContext _Command_Ban, DiscordMember Member,
-                DiscordAuditLogBotAddEntry _Discord_auditLog)
+                DiscordAuditLogBotAddEntry _Discord_auditLog, DiscordChannel _Channel)
+            
             {
 
+                //check if user has the permission to ban users
 
+                if (_Channel.Id != 1394896421211209799)
+                {
+                    
+                    //do noting can't ban outside of ban channel
+                    
+                }
 
+                else
+                {
+                    
+                    if(!Member.Permissions.HasPermission(Permissions.BanMembers))
+                    {
+                    
+                 
+                    
+                    }
 
+                    if (Member.Id == _Command_Ban.Member.Id)
+                    {
+                        _Command_Ban.RespondAsync("You cannot ban yourself.");
+                    
+                    
 
+                    }
+
+                    if (Member.IsBot)
+                    {
+                    
+                        _Command_Ban.RespondAsync("This is a Bot. You can't Ban a Bot");
+                        
+                    }
+
+                    
+                }
+                
+            
+                
+                
+                
+                
+                
 
             }
 

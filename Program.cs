@@ -55,7 +55,7 @@ namespace GameNewsBotApp
                 Token = token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-              MinimumLogLevel = LogLevel.Trace,
+              MinimumLogLevel = LogLevel.Information,
                 LogTimestampFormat = "yyyy-MM-dd HH:mm:ss",
                 MessageCacheSize = 1000,
               
