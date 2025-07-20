@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using Discord.Interactions;
 using DSharpPlus;
 using DSharpPlus.Entities;
@@ -69,13 +70,20 @@ namespace GameNewsBotApp.Commands
         {
             [Command("Role")]
             [Description("Display Role assigned to user")]
-            public Task _Role_Command(CommandContext _Command_Role)
+            public Task _Role_Command(CommandContext _Command_Role, DiscordRole _DiscordRole, DiscordChannel _channel)
             {
 
-                //get guild id
 
-                //take guild id dispaly roles in guild wiht commmand
+                if (!_channel.IsPrivate)
+                {
+                    // don't display roles
+                    
+                    
+                }
 
+                
+                
+                
 
 
                 return Task.CompletedTask;
@@ -248,11 +256,40 @@ namespace GameNewsBotApp.Commands
                 DiscordAuditLogBanEntry _Logentry, DiscordMember _member, DiscordGuild _guild)
             {
 
-             
+             // check permissions for user to create invite linke
+
+             if (!_Invite_Join.Member.Permissions.HasPermission(Permissions.CreateInstantInvite))
+             {
+                // do nothing
+                _member.SendMessageAsync("You do not have permission to join the channel.");
+                 
+                 
+             }
+                
+                
                 //craete invite link
+
+                var invite = _channel.CreateInviteAsync(max_age:7 * 24 * 60 * 60, // 7 days);
+                    max_uses: 100, // 100 uses
+                    reason: "Invite created by the bot for joining the channel.");
+
+                if (_channel.IsPrivate)
+                {
+                    _Invite_Join.RespondAsync("This command can only be used in public channels.");
+                    return Task.CompletedTask;
+                }
                 
-                _guild.GetInvite();
                 
+                
+                if (_channel.Id != 1394896421211209799)
+                {
+                    _Invite_Join.RespondAsync("This command can only be used in the invite channel.");
+                    return Task.CompletedTask;
+                }
+                
+                
+                
+    
                 
                 
     
@@ -304,7 +341,7 @@ namespace GameNewsBotApp.Commands
 
                     if (Member.Id == _Command_Ban.Member.Id)
                     {
-                        _Command_Ban.RespondAsync("You cannot ban yourself.");
+                        _Channel.SendMessageAsync("You cannot ban yourself.");
                     
                     
 
@@ -313,11 +350,17 @@ namespace GameNewsBotApp.Commands
                     if (Member.IsBot)
                     {
                     
-                        _Command_Ban.RespondAsync("This is a Bot. You can't Ban a Bot");
+                        _Channel.SendMessageAsync("You cannot ban bots.");
                         
                     }
 
-                    
+                    if (Member.IsOwner)
+
+                    {
+                        _Channel.SendMessageAsync("You cannot ban yourself.");
+                        
+                    }
+                
                 }
                 
             

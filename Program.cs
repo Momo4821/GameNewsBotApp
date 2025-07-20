@@ -39,7 +39,7 @@ namespace GameNewsBotApp
             if (string.IsNullOrEmpty(token))
             {
 
-                //Discord_Logger_service.Log_Error("String is Empty");
+                Discord_Logger_service.Log_Error("String is Empty",new EventId(1));
 
                 return; 
 
@@ -55,7 +55,7 @@ namespace GameNewsBotApp
                 Token = token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-              MinimumLogLevel = LogLevel.Information,
+                MinimumLogLevel = LogLevel.Information,
                 LogTimestampFormat = "yyyy-MM-dd HH:mm:ss",
                 MessageCacheSize = 1000,
               
@@ -86,12 +86,16 @@ namespace GameNewsBotApp
             //Basic Commands
             commands.RegisterCommands<Basic_Commands.Ping_command>();
             commands.RegisterCommands<Basic_Commands.Greet_Command>();
-            commands.RegisterCommands<Basic_Commands.Role_Command>(); 
+            commands.RegisterCommands<Basic_Commands.Role_Command>();
+            commands.RegisterCommands<Basic_Commands._Invite_Join>();
+            //Admin Commnands
             commands.RegisterCommands<Basic_Commands.Kick_Command>();
             commands.RegisterCommands<Basic_Commands.Kick_Rules>();
+            commands.RegisterCommands<Basic_Commands.Ban_Command>();
             //News Commands
             commands.RegisterCommands<News_Command.TF2_command>();
             commands.RegisterCommands<News_Command.Marvel_rivals>();
+            
            
 
             await Client.ConnectAsync();
