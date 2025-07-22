@@ -111,25 +111,9 @@ namespace GameNewsBotApp
             var time_stamp = DateTime.Now.ToString("u");
             /*Discord_Logger_service.Log_information($"Client is ready and Online", time_stamp);*/
             Discord_Logger_service.Log_information("Client is Ready", new EventId(10, "Ready") );
-
-            /* string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                 "C:\\Users\\malan\\tesfolder");
-             Directory.CreateDirectory(directoryPath); // Ensure the directory exists
-             string filePath = Path.Combine(directoryPath, "Test.txt");
-             using (StreamWriter test = new StreamWriter(File.Create(filePath))) ;*/
             return Task.CompletedTask;
 
         }
     }
 
 }
-
-/*private static async Task Client_Action_News(DiscordClient sender, ReadyEventArgs args)
-{
-    ulong channelid_action = 1382840332898668554;
-    var channel = await Client.GetChannelAsync(channelid_action);
-
-    await channel.SendMessageAsync("test for only action channel");
-
-}
-*/

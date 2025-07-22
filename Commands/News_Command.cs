@@ -1,29 +1,14 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using DSharpPlus.Entities;
-//using GameNewsBotApp.Logging;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.NetworkInformation;
-using System.Runtime.InteropServices;
-using System.Security.Policy;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Channels;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
-using System.Windows.Forms;
-using DSharpPlus;
 using static GameNewsBotApp.Logging.Logging;
-using static System.Net.WebRequestMethods;
+
 
 namespace GameNewsBotApp.Commands
 {
