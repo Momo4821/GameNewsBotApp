@@ -219,6 +219,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Administrator_Commands.cs" />
     <Compile Include="Commands\Basic_Commands.cs" />
     <Compile Include="Commands\News_Command.cs" />
     <Compile Include="ConfigToken\Get_Token.cs" />
