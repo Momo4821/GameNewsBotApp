@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
@@ -16,7 +17,8 @@ namespace GameNewsBotApp.Commands
         {
             [Command("!kickRules")]
             [System.ComponentModel.Description("Display the rules for kicking users")]
-
+            [RequirePermissions(Permissions.KickMembers)]
+            [Hidden]
             public Task Kick_Rules_Command(CommandContext _Command_Kick_Rules, DiscordMember _memeber)
             {
 
@@ -31,19 +33,7 @@ namespace GameNewsBotApp.Commands
                 rules.ToString();
 
                 string rules_message = rules.ToString();
-
-                if (_memeber.Permissions.HasPermission(Permissions.KickMembers))
-                {
-                    _memeber.SendMessageAsync(rules_message);
-                }
-                else
-                {
-                    _Command_Kick_Rules.RespondAsync("You do not have permission to view the kick rules.");
-
-                }
-
-
-
+                
                 return Task.CompletedTask;
             }
 
@@ -72,19 +62,15 @@ namespace GameNewsBotApp.Commands
 
             [Command("Kick")]
             [System.ComponentModel.Description("Kick users from Channel")]
+            [RequirePermissions(Permissions.KickMembers)]
+            [Hidden]
+            
             public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, DiscordChannel _Channel,
                 int reason_indxed = -1)
             {
                 var logger = new Logging.Logging.Discord_Logger_service();
                 //check if user has permission to kick
-                if (!_Command_Kick.Member.Permissions.HasPermission(Permissions.KickMembers))
-                {
-                    await member.SendMessageAsync("You do not have permission to kick members.");
-                    logger.Log_information("User does not have permission to kick members", new EventId(88));
-                    //only send message to user in dm 
-
-                }
-
+                
                 if (member == null)
                 {
                     await _Command_Kick.RespondAsync("Please specify a member to kick.");
@@ -106,9 +92,9 @@ namespace GameNewsBotApp.Commands
                 }
 
                 if (reason_indxed < 0 || reason_indxed >= Kick_reasons.Count)
-
                 {
-                    var reasonsList = string.Join("\n", Kick_reasons.Select((r, i) => $"{i}: {r}"));
+                    var reasonsList = string.Join("\n", Kick_reasons.Select((r, i) => $"{i}: {r}")); // i is the index of the reason    
+                                                                                                    //r is the reason
                     await _Command_Kick.RespondAsync(
                         $"Invalid reason index. Please choose a valid reason from the list:");
                     logger.Log_information("Invalid reason index for kick command", new EventId(85));
@@ -133,7 +119,7 @@ namespace GameNewsBotApp.Commands
 
                     await member.RemoveAsync(
                         $"You have kicked{member.DisplayName} from {_Channel.Guild.Name} for the following reasons {reason}");
-                    logger.Log_information($"{member.DisplayName} has been kicked {reason}", new EventId(8492));
+                    logger.Log_information($"{member.DisplayName} has been kicked {reason}", new EventId(14021));
                 }
             }
         }
@@ -160,6 +146,8 @@ namespace GameNewsBotApp.Commands
             private ulong _ChannelId = 1394896421211209799;
             [Command("Ban")]
             [System.ComponentModel.Description("Ban users from Channel")]
+            [RequirePermissions(Permissions.BanMembers)]
+            [Hidden]
             public Task _Ban_Command(CommandContext _Command_Context, DiscordMember member, DiscordChannel Channel)
             {
                 if (member == null)
@@ -192,24 +180,63 @@ namespace GameNewsBotApp.Commands
                     
                 }
                 
-                
-                
-                
-                
-                
-                
                 return Task.CompletedTask;
             }
             
             
             
         }
-            
         
-        
-        
-        
-        
+
+        public class Unban_Command : BaseCommandModule
+        {
+            private ulong Channelid = 1401277269715980398; // unban channel id
+            [Command("Unban")]
+            [System.ComponentModel.Description("Unban users from Channel")]
+            [RequirePermissions(Permissions.BanMembers)]
+            [Hidden]
+            public Task _Unban_Command(CommandContext _Command_Context, DiscordMember member, DiscordChannel Channel, DiscordUser user)
+            {
+                if (member == null)
+                {
+                    _Command_Context.RespondAsync("Please specify a member to unban.");
+                    
+                }
+                
+                //check if user has permission to unban
+                
+                if (member.IsBot)
+                {
+                    _Command_Context.RespondAsync("You cannot unban a bot.");
+                    
+                }
+                
+                if (member.Id == _Command_Context.Member.Id)
+                {
+                    _Command_Context.RespondAsync("You cannot unban yourself.");
+                    
+                }
+                
+                //check if the channel is the correct channel for unbanning
+                if (Channel.Id != 1394896421211209799)
+                {
+                    _Command_Context.RespondAsync("This command can only be used in the designated unban channel.");
+                    
+                }
+
+
+                if (Channel.Id == _Command_Context.Channel.Id)
+                {
+                    _Command_Context.Guild.UnbanMemberAsync(user.Id,user.Mention);
+                    _Command_Context.RespondAsync($"User {user.Username} has been unbanned.");
+                      // Log the unban action
+                    
+                }
+              
+                
+                return Task.CompletedTask;
+            }
+        }
         
     } // end of class Administrator_Commands
 

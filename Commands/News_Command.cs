@@ -24,6 +24,10 @@ namespace GameNewsBotApp.Commands
 
         }
 
+     
+        
+       
+
         public class TF2_command : BaseCommandModule
         {
             
@@ -49,8 +53,6 @@ namespace GameNewsBotApp.Commands
                         .ToObject<List<Newsitem>>(); // Deserialize the JSON response into a list of Newsitem object
                 var news_Content = string.Join("\n\n", app_news.Select(item =>
                     $"{item.title}\n{item.url}")); // Format the news content with title and URL
-
-
                 try
                 {
 
@@ -70,26 +72,12 @@ namespace GameNewsBotApp.Commands
                     throw;
                 }
 
-
-
-
-
-              
+                
 
             }
 
 
         }
-
-
-
-
-
-
-
-
-
-
         public class Marvel_rivals : BaseCommandModule
         {
 
@@ -110,20 +98,12 @@ namespace GameNewsBotApp.Commands
 
                     JsonElement root = doc.RootElement;
                     JsonElement newsItems = root.GetProperty("appnews").GetProperty("newsitems");
-
-
-
-
-                    foreach (JsonElement url in newsItems.EnumerateArray())
+                    foreach (JsonElement url_final in newsItems.EnumerateArray())
                     {
 
                      await  _command_Marvel.RespondAsync(
-                            $"**Title:** {url.GetProperty("title").GetString()}\n**URL:** {url.GetProperty("url").GetString()}");
-                       
+                            $"**Title:** {url_final.GetProperty("title").GetString()}\n**URL:** {url_final.GetProperty("url").GetString()}");
                     }
-
-                   
-
                 }
             }
 

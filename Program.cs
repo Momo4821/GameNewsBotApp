@@ -20,8 +20,8 @@ namespace GameNewsBotApp
 
     internal class Program
     {
-
-
+        
+        
         private static DiscordClient Client { get; set; }
 
 
@@ -44,9 +44,6 @@ namespace GameNewsBotApp
                 return; 
 
             }
-            
-            
-          
             
             var discordconifig = new DiscordConfiguration()
             {
@@ -75,11 +72,6 @@ namespace GameNewsBotApp
                 EnableDefaultHelp = true,
                 DmHelp = true,
                 
-                
-                
-
-
-
             };
 
             commands = Client.UseCommandsNext(Discord_Bot_Commands);
@@ -115,6 +107,11 @@ namespace GameNewsBotApp
             return Task.CompletedTask;
 
         }
+        
+        
+        
+        
+        
     }
 
 }
