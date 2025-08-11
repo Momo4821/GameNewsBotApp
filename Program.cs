@@ -9,11 +9,6 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-
-
-
-
-
 namespace GameNewsBotApp
 {
 
@@ -69,7 +64,7 @@ namespace GameNewsBotApp
                 CaseSensitive = false,
                 EnableMentionPrefix = true,
                 EnableDms = true,
-                EnableDefaultHelp = true,
+                EnableDefaultHelp = false,
                 DmHelp = true,
                 
             };
@@ -78,7 +73,6 @@ namespace GameNewsBotApp
             //Basic Commands
             commands.RegisterCommands<Basic_Commands.Ping_command>();
             commands.RegisterCommands<Basic_Commands.Greet_Command>();
-            commands.RegisterCommands<Basic_Commands.Role_Command>();
         
             //Admin Commnands
             commands.RegisterCommands<Administrator_Commands.Kick_Command>();
@@ -89,10 +83,15 @@ namespace GameNewsBotApp
             commands.RegisterCommands<News_Command.TF2_command>();
             commands.RegisterCommands<News_Command.Marvel_rivals>();
             
+            //Music Commands
+            
+            
+            //test Emb
+            /*commands.RegisterCommands<HelpCommandButton.InteractionComponents>();*/
            
 
-            await Client.ConnectAsync();
-            await Task.Delay(-1);
+            await Client.ConnectAsync(); // Connect the client to Discord
+            await Task.Delay(-1);  // Wait indefinitely to keep the application running
 
         }
         
@@ -101,7 +100,7 @@ namespace GameNewsBotApp
 
        
             var Discord_Logger_service = new Logging.Logging.Discord_Logger_service();
-            var time_stamp = DateTime.Now.ToString("u");
+            var time_stamp = DateTime.Now.ToString("u"); 
             /*Discord_Logger_service.Log_information($"Client is ready and Online", time_stamp);*/
             Discord_Logger_service.Log_information("Client is Ready", new EventId(10, "Ready") );
             return Task.CompletedTask;
