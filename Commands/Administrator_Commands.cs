@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -95,7 +96,7 @@ namespace GameNewsBotApp.Commands
                 {
                     var reasonsList = string.Join("\n", Kick_reasons.Select((r, i) => $"{i}: {r}")); // i is the index of the reason    
                                                                                                     //r is the reason
-                    await _Command_Kick.RespondAsync(
+                    await member.SendMessageAsync(
                         $"Invalid reason index. Please choose a valid reason from the list:");
                     logger.Log_information("Invalid reason index for kick command", new EventId(85));
                     return;
@@ -242,7 +243,91 @@ namespace GameNewsBotApp.Commands
 
 
   
-    
+    public class _timeout_Command : BaseCommandModule
+    {
+        private readonly List<string> timeout_reasons = new List<string>
+        {
+            "Timeout for spamming", //index 0
+            "Timeout for being rude", //index 1
+            "Timeout for being toxic", //index 2
+            "Timeout for being disrespectful", //index 3
+            "Timeout for being a troll", //index 4  
+            
+            
+
+        };
+
+        private readonly List<string> timeout_timespan = new List<string>
+        {
+            "10 mintes",
+            "30 minutes",
+            "1 hour",
+            "6 hours",
+            "12 hours",
+            "1 day",
+
+
+        };
+        
+
+        private ulong _timeoutchannl = 1444853871821328584; // timeout channel in discord channel
+        [Command("Timeout")]
+        [System.ComponentModel.Description("Timeout users from Channel")]
+        [RequirePermissions(Permissions.ModerateMembers)]
+        [Hidden]
+        public Task _TimeoutCommand(CommandContext _Command_timeout, DiscordMember member, DiscordChannel _channelid)
+        {
+            if (member == null)
+            {
+                _Command_timeout.RespondAsync("Please specify a member to timeout.");
+                
+            }
+
+
+            if (member.IsBot)
+            {
+                
+                _Command_timeout.RespondAsync("You cannot ban a bot.");
+            }
+            
+            if (member.Id == _Command_timeout.Member.Id)
+            {
+                _Command_timeout.RespondAsync("You cannot timeout yourself.");
+                
+            }
+            
+            if (_channelid.Id != _timeoutchannl)
+            {
+             
+                member.SendMessageAsync("This command can only be used in the designated timeout channel.");
+                
+            }
+
+
+            if (_channelid.Id == _Command_timeout.Channel.Id)
+            {
+             
+                
+                
+                
+                
+            }
+            
+                
+            
+            
+            
+            
+            
+            
+            return Task.CompletedTask;
+        }
+
+
+
+
+
+    }
     
     
     

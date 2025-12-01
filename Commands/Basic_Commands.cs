@@ -9,7 +9,7 @@ using DSharpPlus.Entities;
 
 namespace GameNewsBotApp.Commands
 {
-    internal class Basic_Commands
+    public class Basic_Commands
     {
         
         public class Ping_command : BaseCommandModule
@@ -18,14 +18,17 @@ namespace GameNewsBotApp.Commands
             [Description("Ping Command that pings user and dispalys latency")]
             public async Task Ping_Command(CommandContext _command_Ping)
             {
-
+                
 
                 await _command_Ping.RespondAsync(
                     $"Pong! latency is {_command_Ping.Client.Ping}ms. From {_command_Ping.User.Username}");
-
+                
+                
             }
 
         }
+        
+        
         // Greet Command
         public class Greet_Command : BaseCommandModule
         {
@@ -33,6 +36,10 @@ namespace GameNewsBotApp.Commands
             [Description("Great users in Multiple Channels")]
             public async Task _Greet_Command(CommandContext _Command_Greet)
             {
+
+                var My_Button = new DiscordButtonComponent(ButtonStyle.Primary, "greet_button", "Greet Me!", false);
+                    
+                
                 
                 if (_Command_Greet.Member != null)
                     await _Command_Greet.RespondAsync(

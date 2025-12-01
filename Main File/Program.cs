@@ -9,6 +9,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
+
 namespace GameNewsBotApp
 {
 
@@ -52,7 +53,6 @@ namespace GameNewsBotApp
                 MessageCacheSize = 1000,
               
             };
-
             Client = new DiscordClient(discordconifig);
 
             Client.Ready += Client_Ready;
@@ -83,7 +83,16 @@ namespace GameNewsBotApp
             commands.RegisterCommands<News_Command.TF2_command>();
             commands.RegisterCommands<News_Command.Marvel_rivals>();
             
-            //Music Commands
+          
+            
+            
+            
+            //Slash Comands -db
+            
+            //commands to be added later
+            
+            
+            
             
             
             //test Emb
