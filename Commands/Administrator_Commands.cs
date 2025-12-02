@@ -306,7 +306,8 @@ namespace GameNewsBotApp.Commands
 
             if (_channelid.Id == _Command_timeout.Channel.Id)
             {
-             
+                
+                
                 
                 
                 

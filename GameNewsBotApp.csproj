@@ -250,6 +250,13 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="GamesNewsBot-Book\book\book.toml" />
+    <Content Include="GamesNewsBot-Book\book\src\chapter_1.md" />
+    <Content Include="GamesNewsBot-Book\book\src\Chapter_2.md" />
+    <Content Include="GamesNewsBot-Book\book\src\SUMMARY.md" />
+    <Content Include="GamesNewsBot-Book\book\src\Welcome.md" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
