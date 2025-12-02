@@ -254,6 +254,8 @@
     <Content Include="GamesNewsBot-Book\book\book.toml" />
     <Content Include="GamesNewsBot-Book\book\src\chapter_1.md" />
     <Content Include="GamesNewsBot-Book\book\src\Chapter_2.md" />
+    <Content Include="GamesNewsBot-Book\book\src\Chapter_3.md" />
+    <Content Include="GamesNewsBot-Book\book\src\Chapter_4.md" />
     <Content Include="GamesNewsBot-Book\book\src\SUMMARY.md" />
     <Content Include="GamesNewsBot-Book\book\src\Welcome.md" />
   </ItemGroup>
