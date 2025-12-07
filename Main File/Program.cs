@@ -8,7 +8,10 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
-
+using  GameNewsBotApp.Logging;
+using Serilog;
+using GameNewsBotApp.Logging;
+using GameNewsBotApp.Slash_Commands;
 
 namespace GameNewsBotApp
 {
@@ -23,9 +26,10 @@ namespace GameNewsBotApp
 
         private static CommandsNextExtension commands { get; set; }
 
+        
         static async Task Main(string[] args)
         {
-            var Discord_Logger_service = new Logging.Logging.Discord_Logger_service();
+           
 
 
             var Tokenprovider = new Get_Token();
@@ -35,7 +39,7 @@ namespace GameNewsBotApp
             if (string.IsNullOrEmpty(token))
             {
 
-                Discord_Logger_service.Log_Error("String is Empty",new EventId(1));
+          
 
                 return; 
 
@@ -48,14 +52,16 @@ namespace GameNewsBotApp
                 Token = token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-                MinimumLogLevel = LogLevel.Information,
-                LogTimestampFormat = "yyyy-MM-dd HH:mm:ss",
+              //  MinimumLogLevel = LogLevel.Information,
+               // LogTimestampFormat = "yyyy-MM-dd HH:mm:ss",
                 MessageCacheSize = 1000,
               
             };
             Client = new DiscordClient(discordconifig);
+            Logger.configurelogger();
+            Log.Logger.Information("Bot is starting up at {Time}", DateTime.Now.ToString(")u"));
 
-            Client.Ready += Client_Ready;
+         //   Client.Ready += Client_Ready;
             
             //setup commands
             var Discord_Bot_Commands = new CommandsNextConfiguration()
@@ -73,20 +79,25 @@ namespace GameNewsBotApp
             //Basic Commands
             commands.RegisterCommands<Basic_Commands.Ping_command>();
             commands.RegisterCommands<Basic_Commands.Greet_Command>();
+            
         
             //Admin Commnands
             commands.RegisterCommands<Administrator_Commands.Kick_Command>();
             commands.RegisterCommands<Administrator_Commands.Kick_Rules>();
             commands.RegisterCommands<Administrator_Commands.Ban_Command>();
-          
+            commands.RegisterCommands<Administrator_Commands._timeout_Command>();
+            
             //News Commands
             commands.RegisterCommands<News_Command.TF2_command>();
             commands.RegisterCommands<News_Command.Marvel_rivals>();
             
           
+          //log command
+          commands.RegisterCommands<Administrator_Commands.Unban_Command>();
+          
             
-            
-            
+          
+          
             //Slash Comands -db
             
             //commands to be added later
@@ -104,17 +115,21 @@ namespace GameNewsBotApp
 
         }
         
-        private static Task Client_Ready(DiscordClient sender, ReadyEventArgs args)
+        
+        
+        
+        /*private static Task Client_Ready(DiscordClient sender, ReadyEventArgs args)
         {
-
-       
-            var Discord_Logger_service = new Logging.Logging.Discord_Logger_service();
+            
+          var serilog_config = new LoggerConfiguration();
+          serilog_config.
+          
             var time_stamp = DateTime.Now.ToString("u"); 
-            /*Discord_Logger_service.Log_information($"Client is ready and Online", time_stamp);*/
-            Discord_Logger_service.Log_information("Client is Ready", new EventId(10, "Ready") );
+            Log.Logger.Information("server started at ", time_stamp);
+            /*Discord_Logger_service.Log_information($"Client is ready and Online", time_stamp);#1#
             return Task.CompletedTask;
 
-        }
+        }*/
         
         
         

@@ -19,7 +19,7 @@ namespace GameNewsBotApp.Commands
             public async Task Ping_Command(CommandContext _command_Ping)
             {
                 
-
+                
                 await _command_Ping.RespondAsync(
                     $"Pong! latency is {_command_Ping.Client.Ping}ms. From {_command_Ping.User.Username}");
                 

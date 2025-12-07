@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static GameNewsBotApp.Logging.Logging;
+using  GameNewsBotApp.Logging;
 
 
 namespace GameNewsBotApp.Commands
@@ -45,7 +45,7 @@ namespace GameNewsBotApp.Commands
             [Description("Ping Command that pings user and dispalys latency")]
             public async Task TF2_Command(CommandContext _command_News)
             {
-                var logger = new Discord_Logger_service();
+              
                 var response = await _httpClient.GetStringAsync(TF2_NewsApiUrl);
                 var json = JObject.Parse(response);
                 var app_news =

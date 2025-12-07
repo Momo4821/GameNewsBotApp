@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace GameNewsBotApp.Commands
 {
     public class Administrator_Commands
     {
+   
         public class Kick_Rules : BaseCommandModule
         {
             [Command("!kickRules")]
@@ -69,13 +71,13 @@ namespace GameNewsBotApp.Commands
             public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, DiscordChannel _Channel,
                 int reason_indxed = -1)
             {
-                var logger = new Logging.Logging.Discord_Logger_service();
+            
                 //check if user has permission to kick
                 
                 if (member == null)
                 {
                     await _Command_Kick.RespondAsync("Please specify a member to kick.");
-                    logger.Log_information("No member specified for kick command", new EventId(87));
+                  
 
                 }
 
@@ -89,7 +91,7 @@ namespace GameNewsBotApp.Commands
                 if (member.Id == _Command_Kick.Member.Id)
                 {
                     await member.SendMessageAsync("You cannot kick yourself.");
-                    logger.Log_information("User tried to kick themselves", new EventId(86));
+                  
                 }
 
                 if (reason_indxed < 0 || reason_indxed >= Kick_reasons.Count)
@@ -98,7 +100,7 @@ namespace GameNewsBotApp.Commands
                                                                                                     //r is the reason
                     await member.SendMessageAsync(
                         $"Invalid reason index. Please choose a valid reason from the list:");
-                    logger.Log_information("Invalid reason index for kick command", new EventId(85));
+                   
                     return;
 
                 }
@@ -120,7 +122,7 @@ namespace GameNewsBotApp.Commands
 
                     await member.RemoveAsync(
                         $"You have kicked{member.DisplayName} from {_Channel.Guild.Name} for the following reasons {reason}");
-                    logger.Log_information($"{member.DisplayName} has been kicked {reason}", new EventId(14021));
+                   
                 }
             }
         }
@@ -239,7 +241,7 @@ namespace GameNewsBotApp.Commands
             }
         }
         
-    } // end of class Administrator_Commands
+ 
 
 
   
@@ -317,21 +319,42 @@ namespace GameNewsBotApp.Commands
                 
             
             
+            return Task.CompletedTask;
+        }
+        }
+        
+    public class _GetLogs_Command : BaseCommandModule
+    {
+        private readonly ulong _logschannel = 1447104716877332501; // logs channel id
+        [Command("GetLogs")]
+        [System.ComponentModel.Description("Get Logs File in specified channel")]
+        [RequirePermissions(Permissions.Administrator)]
+        [Hidden]
+   
+        public Task _GetLogsinChannelCommand (CommandContext _Command_getlogs, DiscordChannel log_channel, DiscordAttachment attachment, DiscordMessage message)
+        {
+         
             
+            var file_path = "log.txt"; // path to the log file
+
+            if(_logschannel == log_channel.Id)
+            {
+                message.RespondAsync("Here are the available log files: " + file_path);
+                
+                
+            }
             
-            
-            
+      
             return Task.CompletedTask;
         }
 
 
-
-
+       
+        
 
     }
     
-    
-    
+    } // end of class Administrator_Commands
     
 } // end of namespace
             
