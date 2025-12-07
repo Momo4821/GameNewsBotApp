@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using  GameNewsBotApp.Logging;
 using Serilog;
 using GameNewsBotApp.Logging;
-
+using GameNewsBotApp.Slash_Commands;
 
 namespace GameNewsBotApp.Slash_Commands
 {
@@ -41,7 +41,7 @@ public class SlashcommandsConfig
         
         
             //slash db commands
-            slashcommands.RegisterCommands<Slash_Commands.DB_Commands>();
+                slashcommands.RegisterCommands.;
         
        
     }
