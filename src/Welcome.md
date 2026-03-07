@@ -20,12 +20,13 @@
 
 
 ### Getting Started
-+ To get started with the Games News Bot, you'll need to invite it to your Discord server. You can do this by clicking on the invite link provided in the bot's repository or website.
++ To get started with the Games News Bot, You'll need to Join the Game News Server
+
 
 Invite Link
 
 
-+ Once the bot is added to your server, you can start using its commands to fetch game news.
++ Once you have joined the Server, you can start using its commands to fetch game news.
 
 
 

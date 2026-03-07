@@ -15,15 +15,18 @@ namespace GameNewsBotApp.Commands
     internal class News_Command
     {
 
-        public class Newsitem // created a class for the news item to deserialize the JSON response
-            // from the Steam API
+        public class Newsitem // created a class for the news item to deserialize the JSON response// from the Steam API
             // each property corresponds to a field in the JSON response
         {
-            public string title { get; set; }
-            public string url { get; set; }
+            public string title { get;}
+            public string url { get; }
 
         }
 
+        
+        //Maybe custom commands?
+        public static string AppId;
+        public string newscommanduser  =$"\"https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={AppId}&count=3&maxlength=300&format=json";
      
         
        
@@ -82,11 +85,12 @@ namespace GameNewsBotApp.Commands
         {
 
             HttpClient _httpClient = new HttpClient();
-            //using jsontext
 
 
             [Command("Marvel")]
             [Description("Marvel Rivals News Command that gets the latest news from Marvel Rivals")]
+            [Category("NewsCommand")]
+            [RequirePrefixes("!")]
             public async Task Marvel_Command(CommandContext _command_Marvel)
             {
                 var response = await _httpClient.GetStringAsync(
@@ -108,6 +112,25 @@ namespace GameNewsBotApp.Commands
             }
 
         }
+        
+        public class createusercommand :BaseCommandModule
+        {
+            
+            
+            public async Task _Create_Command(CommandContext _Create)
+            {
+                
+                
+                
+            }
+            
+            
+        }
 
     }
+    
+    
+    
+    
+    
 }

@@ -21,6 +21,7 @@ namespace GameNewsBotApp.Commands
             [Command("!kickRules")]
             [System.ComponentModel.Description("Display the rules for kicking users")]
             [RequirePermissions(Permissions.KickMembers)]
+            [RequirePrefixes("!")]
             [Hidden]
             public Task Kick_Rules_Command(CommandContext _Command_Kick_Rules, DiscordMember _memeber)
             {
@@ -39,15 +40,8 @@ namespace GameNewsBotApp.Commands
                 
                 return Task.CompletedTask;
             }
-
-
-
-
+            
         }
-
-
-
-
         // Kick Command
         public class Kick_Command : BaseCommandModule
         {
@@ -66,10 +60,10 @@ namespace GameNewsBotApp.Commands
             [Command("Kick")]
             [System.ComponentModel.Description("Kick users from Channel")]
             [RequirePermissions(Permissions.KickMembers)]
+            [RequirePrefixes("!")]
             [Hidden]
             
-            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, DiscordChannel _Channel,
-                int reason_indxed = -1)
+            public async Task _Kick_Command(CommandContext _Command_Kick, DiscordMember member, DiscordChannel _Channel, int Kickreason_index = -1)
             {
             
                 //check if user has permission to kick
@@ -93,37 +87,17 @@ namespace GameNewsBotApp.Commands
                     await member.SendMessageAsync("You cannot kick yourself.");
                   
                 }
-
-                if (reason_indxed < 0 || reason_indxed >= Kick_reasons.Count)
+                
+               
+                    string reasons = Kick_reasons[Kickreason_index]; // Reasons will access what is in the list of Kick reasons
+                if (Kickreason_index <= Kick_reasons.Count)
                 {
-                    var reasonsList = string.Join("\n", Kick_reasons.Select((r, i) => $"{i}: {r}")); // i is the index of the reason    
-                                                                                                    //r is the reason
-                    await member.SendMessageAsync(
-                        $"Invalid reason index. Please choose a valid reason from the list:");
-                   
-                    return;
-
+                    await member.SendMessageAsync($"{member.DisplayName} have been kicked for the following reason {Kick_reasons}");    
                 }
+                
+                await member.RemoveAsync($"You have been kicked for the following reasons{reasons}");
 
-                string reason = Kick_reasons[reason_indxed];
-                try
-                {
-                    await member.SendMessageAsync($"You have been kicked for the following reason {reason}");
-
-                }
-                catch
-                {
-
-                    //nothing happens
-                }
-
-                if (_Channel.IsPrivate == _Command_Kick.Channel.IsPrivate)
-                {
-
-                    await member.RemoveAsync(
-                        $"You have kicked{member.DisplayName} from {_Channel.Guild.Name} for the following reasons {reason}");
-                   
-                }
+                
             }
         }
 
@@ -134,8 +108,10 @@ namespace GameNewsBotApp.Commands
 
         public class Ban_Command : BaseCommandModule
         {
+            public RequirePrefixesAttribute RequirePrefixesAttribute {get;set;}
+        
             
-            private readonly List<string> ban_reasons = new List<string>
+            private static readonly List<string> ban_reasons = new List<string>
             {
                 "You have violated the rules of this channel", //index  0 
                 "You have been banned for spamming", //index 1
@@ -150,9 +126,12 @@ namespace GameNewsBotApp.Commands
             [Command("Ban")]
             [System.ComponentModel.Description("Ban users from Channel")]
             [RequirePermissions(Permissions.BanMembers)]
+            [RequirePrefixes("!")]
             [Hidden]
-            public Task _Ban_Command(CommandContext _Command_Context, DiscordMember member, DiscordChannel Channel)
+            public async Task _Ban_Command(CommandContext _Command_Context, DiscordMember member, DiscordChannel Channel, RequirePrefixesAttribute requirePrefixesAttribute)
             {
+                
+                
                 if (member == null)
                 {
                     member.SendMessageAsync("Please specify a member to ban.");
@@ -164,7 +143,7 @@ namespace GameNewsBotApp.Commands
                 {
                   member.SendMessageAsync("You do not have permission to ban members.");
                     
-                    return Task.CompletedTask;
+                   
                 }
                 if (member.IsBot)
                 {
@@ -179,11 +158,21 @@ namespace GameNewsBotApp.Commands
 
                 if (Channel.Id != _ChannelId)
                 {
-                    _Command_Context.RespondAsync("This command can only be used in the designated ban channel.");
+                    member.SendMessageAsync("This command can only be used in the designated ban channel.");
                     
                 }
                 
-                return Task.CompletedTask;
+                
+                int banreason_index = 0;
+                if (banreason_index >= 0 && banreason_index < ban_reasons.Count) // Check if the index is within the valid range of the ban reasons list
+                {                    string reason = ban_reasons[banreason_index]; // Get the reason from the list based on the index
+                if(Channel.Id == _Command_Context.Channel.Id)
+                {
+                    await member.BanAsync(0, $"You have been banned for the following reasons: {ban_reasons}");
+                    _Command_Context.RespondAsync($"User {member.Username} has been banned.");
+                    
+                }
+                
             }
             
             
@@ -198,7 +187,7 @@ namespace GameNewsBotApp.Commands
             [System.ComponentModel.Description("Unban users from Channel")]
             [RequirePermissions(Permissions.BanMembers)]
             [Hidden]
-            public Task _Unban_Command(CommandContext _Command_Context, DiscordMember member, DiscordChannel Channel, DiscordUser user)
+            public async Task _Unban_Command(CommandContext _Command_Context, DiscordMember member, DiscordChannel Channel, DiscordUser user)
             {
                 if (member == null)
                 {
@@ -237,7 +226,9 @@ namespace GameNewsBotApp.Commands
                 }
               
                 
-                return Task.CompletedTask;
+                
+                
+                
             }
         }
         
@@ -259,7 +250,7 @@ namespace GameNewsBotApp.Commands
 
         };
 
-        private readonly List<string> timeout_timespan = new List<string>
+        private readonly List<string> _timeoutTimespan = new List<string>
         {
             "10 mintes",
             "30 minutes",
@@ -277,7 +268,7 @@ namespace GameNewsBotApp.Commands
         [System.ComponentModel.Description("Timeout users from Channel")]
         [RequirePermissions(Permissions.ModerateMembers)]
         [Hidden]
-        public Task _TimeoutCommand(CommandContext _Command_timeout, DiscordMember member, DiscordChannel _channelid)
+        public async Task _TimeoutCommand(CommandContext _Command_timeout, DiscordMember member, DiscordChannel _channelid)
         {
             if (member == null)
             {
@@ -309,46 +300,77 @@ namespace GameNewsBotApp.Commands
             if (_channelid.Id == _Command_timeout.Channel.Id)
             {
                 
+                int _timeoutreason_index = 0;
+                int _timeouttimespan_index = 0;
+                if (_timeoutreason_index >= timeout_reasons.Count && _timeouttimespan_index >= _timeoutTimespan.Count)
+                {
+                    
+                    member.SendMessageAsync("You have been timed out for the following reason: " + timeout_reasons[_timeoutreason_index] + " for the following timespan: " + _timeoutTimespan[_timeouttimespan_index]);
+                    
+                    
+                }
+                {
+                    
+                }
                 
                 
                 
                 
                 
             }
-            
-                
-            
-            
-            return Task.CompletedTask;
+
+            ;
         }
         }
         
+    
+
     public class _GetLogs_Command : BaseCommandModule
     {
         private readonly ulong _logschannel = 1447104716877332501; // logs channel id
         [Command("GetLogs")]
         [System.ComponentModel.Description("Get Logs File in specified channel")]
         [RequirePermissions(Permissions.Administrator)]
+        [RequirePrefixes("!")]
         [Hidden]
    
-        public Task _GetLogsinChannelCommand (CommandContext _Command_getlogs, DiscordChannel log_channel, DiscordAttachment attachment, DiscordMessage message)
+        public async Task _GetLogsinChannelCommand (CommandContext _Command_getlogs, DiscordChannel log_channel, DiscordAttachment attachment, 
+            DiscordMessage message, DiscordMember member)
         {
          
+            
+            
             
             var file_path = "log.txt"; // path to the log file
 
             if(_logschannel == log_channel.Id)
             {
+                
+                
                 message.RespondAsync("Here are the available log files: " + file_path);
                 
                 
             }
             
+            if(member.IsBot)
+            {
+                message.RespondAsync("Bot can't request logs.");
+            }
+            
+            if(member.Permissions != Permissions.Administrator)
+            {
+                message.RespondAsync("You are not allowed to use this command.");
+                
+            }
+            
+            
+            
+            
+            
+            
       
-            return Task.CompletedTask;
+            
         }
-
-
        
         
 
