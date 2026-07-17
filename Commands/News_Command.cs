@@ -1,87 +1,53 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
+
 using System.Threading.Tasks;
-using  GameNewsBotApp.Logging;
+
+
 
 
 namespace GameNewsBotApp.Commands
 {
     internal class News_Command
     {
-
-        public class Newsitem // created a class for the news item to deserialize the JSON response// from the Steam API
-            // each property corresponds to a field in the JSON response
-        {
-            public string title { get;}
-            public string url { get; }
-
-        }
-
         
-        //Maybe custom commands?
-        public static string AppId;
-        public string newscommanduser  =$"\"https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={AppId}&count=3&maxlength=300&format=json";
-     
+     private const string MarvelApiUrl = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=2767030&count=3&maxlength=300&format=json";
+     private const string TF2_NewsApiUrl = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=440&count=3&maxlength=300&format=json"; 
         
-       
-
-        public class TF2_command : BaseCommandModule
+        public class Tf2Command : BaseCommandModule
         {
-            
-            private static readonly HttpClient
-                _httpClient =
-                    new HttpClient(); // HttpClient instance to make requests to the Steam API. URL will be the same for this call
-
-            private const ulong ChannelId_News = 1390944612750852250;
-
-
-            private const string TF2_NewsApiUrl =
-                "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=440&count=3&maxlength=300&format=json"; // URL for the Steam News API for Team Fortress 2 (appid=440) with parameters for count and maxlength
-
             [Command("TF2")]
-            [Description("Ping Command that pings user and dispalys latency")]
-            public async Task TF2_Command(CommandContext _command_News)
-            {
-              
-                var response = await _httpClient.GetStringAsync(TF2_NewsApiUrl);
-                var json = JObject.Parse(response);
-                var app_news =
-                    json["appnews"]["newsitems"]
-                        .ToObject<List<Newsitem>>(); // Deserialize the JSON response into a list of Newsitem object
-                var news_Content = string.Join("\n\n", app_news.Select(item =>
-                    $"{item.title}\n{item.url}")); // Format the news content with title and URL
-                try
+            [Description("")]
+            [Category("NewsCommand For TF2")]
+            public async Task TF2_Command(CommandContext marvelCommand)
+            { 
+               
+            HttpClient  _httpClient = new HttpClient();
+          
+            
+            
+            
+            /*
+            var response = await _httpClient.GetStringAsync(TF2_NewsApiUrl);
+            var json = JObject.Parse(response);
+            var items = json["appnews"]["newsitems"].ToObject<List<root>>();
+            var contents = string.Format("Ttile {0} \n Url: {1}" , items[0].Title,items[1].Url);
+            
+            await marvelCommand.RespondAsync(contents);
+            
+                if(marvelCommand.Member.IsBot)
                 {
-
-
-                    if (_command_News.Channel.Id != ChannelId_News)
-                    {
-                        await _command_News.RespondAsync(
-                            "This command can only be used in the designated news channel.");
-                        return;
-                    }
-                   await _command_News.RespondAsync(news_Content);
-              
+                    await
+                    
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    throw;
-                }
-
+                */
+            
                 
-
-            }
-
-
         }
-        public class Marvel_rivals : BaseCommandModule
+            }
+            
+        public class MarvelRivals : BaseCommandModule
         {
 
             HttpClient _httpClient = new HttpClient();
@@ -89,48 +55,45 @@ namespace GameNewsBotApp.Commands
 
             [Command("Marvel")]
             [Description("Marvel Rivals News Command that gets the latest news from Marvel Rivals")]
-            [Category("NewsCommand")]
+            [Category("NewsCommand For Marvel")]
             [RequirePrefixes("!")]
             public async Task Marvel_Command(CommandContext _command_Marvel)
             {
-                var response = await _httpClient.GetStringAsync(
-                    "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=2767030&count=3&maxlength=300&format=json");
-
-
-                using (JsonDocument doc = JsonDocument.Parse(response))
-                {
-
-                    JsonElement root = doc.RootElement;
-                    JsonElement newsItems = root.GetProperty("appnews").GetProperty("newsitems");
-                    foreach (JsonElement url_final in newsItems.EnumerateArray())
-                    {
-
-                     await  _command_Marvel.RespondAsync(
-                            $"**Title:** {url_final.GetProperty("title").GetString()}\n**URL:** {url_final.GetProperty("url").GetString()}");
-                    }
-                }
+         
+                
+                
+                
             }
 
         }
         
-        public class createusercommand :BaseCommandModule
+        
+        public class RiskOfRain: BaseCommandModule
+        {
+            [Description("Risk of rain NewsCommandthat gets the lastest news from Steam API")]   
+         
+            public async Task RiskOfRainCommand(CommandContext CommandRiskOfRain)
+            {
+             
+             
+             
+            }
+            
+        }
+        
+        public class PalWorld : BaseCommandModule
+        [Description("Palword NewsCommand that gets the latest news from Palword Steam API")]
+        
+        public async Task PalWorldCommand(CommandContext CommandPalWorld)
         {
             
             
-            public async Task _Create_Command(CommandContext _Create)
-            {
-                
-                
-                
-            }
-            
-            
         }
-
+        
+        }
+    
+    
+    
     }
     
     
-    
-    
-    
-}

@@ -24,6 +24,10 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+
+nav:
+  - Summary: index.md
+
 jobs:
   # Build job
   build:

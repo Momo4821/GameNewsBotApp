@@ -15,27 +15,28 @@ namespace GameNewsBotApp.Commands
 
     
     
+    
     public class Basic_Commands
-    {
-        static Counter<int> _basicommandcounter;
-        
+    { 
         
         public class Ping_command : BaseCommandModule
         {
             [Command("Ping")]
             [Description("Ping Command that pings user and dispalys latency")]
             [RequirePrefixes("!")]
+
             public async Task Ping_Command(CommandContext _command_Ping)
             {
-                
-                
+
+           
+
                 await _command_Ping.RespondAsync(
                     $"Pong! latency is {_command_Ping.Client.Ping}ms. From {_command_Ping.User.Username}");
-             
+                
+
             }
 
         }
-        
         
         // Greet Command
         public class Greet_Command : BaseCommandModule
@@ -55,11 +56,6 @@ namespace GameNewsBotApp.Commands
                 if (_Command_Greet.Member != null)
                     await _Command_Greet.RespondAsync(
                         $"Hello, {_Command_Greet.Member.Mention}! Welcome to the Game News Bot!");
-
-              
-                                                                                                                       
-               
-           
                 
             }
             
