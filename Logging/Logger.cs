@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using DSharpPlus;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
 using Serilog.Configuration;
@@ -15,8 +17,10 @@ namespace GameNewsBotApp.Logging
         public static void configurelogger()
         {
 
-            var config = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+           Log.Logger = new LoggerConfiguration().WriteTo.Console().CreateLogger();
         
+     
+         
             
             /*Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
                 .WriteTo

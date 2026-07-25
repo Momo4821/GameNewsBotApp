@@ -21,8 +21,8 @@ namespace GameNewsBotApp
     internal class Program
     {
         
-        public static DiscordClient Client { get; set; }
-        
+        public static DiscordClient Client;
+        public static DiscordConfiguration discordconifig;
         
         public static string [] prefix {get;set;}
        // public static string [] slash {get;set;}
@@ -36,14 +36,13 @@ namespace GameNewsBotApp
             
             var Tokenprovider = new Get_Token();
             var token = Tokenprovider?.token;
-            var todelete = new Get_Token().delete;
             Environment.SetEnvironmentVariable("BOT_TOKEN", "Token"); //Bot Token set for security
             if (string.IsNullOrEmpty(token))
             {
                 return; 
             }
             
-            var discordconifig = new DiscordConfiguration()
+            discordconifig = new DiscordConfiguration()
             {
 
                 Intents = DiscordIntents.All,
@@ -55,8 +54,8 @@ namespace GameNewsBotApp
                 MessageCacheSize = 1000,
               
             };
-            Client = new DiscordClient(discordconifig);
             
+            Client = new DiscordClient(discordconifig);
             
           //  prefix = new string[] {"!"};
             var Discord_Bot_Commands = new CommandsNextConfiguration()
@@ -88,6 +87,8 @@ namespace GameNewsBotApp
             commands.RegisterCommands<News_Command.PalWorld>();
             
           
+            
+            //DatbaseCommands
             
             await Client.ConnectAsync(); // Connect the client to Discord
             await Task.Delay(-1);  // Wait indefinitely to keep the application running

@@ -281,13 +281,11 @@
     <Compile Include="Main File\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Slash Commands\SlashCommands.cs" />
+    <Compile Include="SQL Connection\DiscordDatabase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SQL Connection\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Logging\Appsettings.json" />
