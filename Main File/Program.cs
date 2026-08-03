@@ -77,6 +77,7 @@ namespace GameNewsBotApp
             //Basic Commands
             commands.RegisterCommands<Basic_Commands.Ping_command>();
             commands.RegisterCommands<Basic_Commands.Greet_Command>();
+            commands.RegisterCommands<Basic_Commands.BotInfo>();
             
             
             

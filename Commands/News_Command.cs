@@ -29,8 +29,6 @@ namespace GameNewsBotApp.Commands
             [Category("NewsCommand For TF2")]
             public async Task TF2_Command(CommandContext TF2Command)
             { 
-               
-            HttpClient  _httpClient = new HttpClient();
             var response = await _httpClient.GetStringAsync(TF2_NewsApiUrl);
 
             JsonDocument doc = JsonDocument.Parse(response);
@@ -45,7 +43,6 @@ namespace GameNewsBotApp.Commands
                 string url = item.GetProperty("url").GetString();
                 
               finalist.Add($"{title} \n {url}");
-              
               
             }
             
@@ -65,7 +62,6 @@ namespace GameNewsBotApp.Commands
             [RequirePrefixes("!")]
             public async Task Marvel_Command(CommandContext MarvelCommand)
             {
-              
                 var response = await _httpClient.GetStringAsync(MarvelApiUrl);
                 JsonDocument doc = JsonDocument.Parse(response);
                 JsonElement root = doc.RootElement;
@@ -89,10 +85,9 @@ namespace GameNewsBotApp.Commands
         
         public class RiskOfRain: BaseCommandModule
         {
-            [Description("Risk of rain NewsCommandthat gets the lastest news from Steam API")]   
+            [Description("Risk of rain NewsCommand that gets the lastest news from Steam API")]   
             public async Task RiskOfRainCommand(CommandContext RiskOfRainCommand)
             {
-             HttpClient _httpClient = new HttpClient();
              var response = await _httpClient.GetStringAsync(RiskOfRainURL);
             JsonDocument doc = JsonDocument.Parse(response);
             JsonElement root = doc.RootElement;
@@ -117,7 +112,6 @@ namespace GameNewsBotApp.Commands
         [Description("Palword NewsCommand that gets the latest news from Palword Steam API")]
         public async Task PalWorldCommand(CommandContext PalWorldCommand)
         {
-             _httpClient = new HttpClient();
             var respone = await _httpClient.GetStringAsync(PalWorldURL);
             JsonDocument doc = JsonDocument.Parse(respone);
             JsonElement appnews = doc.RootElement;

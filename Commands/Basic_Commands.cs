@@ -47,17 +47,33 @@ namespace GameNewsBotApp.Commands
             
             public async Task _Greet_Command(CommandContext _Command_Greet)
             {
-
-                var My_Button = new DiscordButtonComponent(ButtonStyle.Primary, "greet_button", "Greet Me!", false);
-                    
-                
-              
-                
                 if (_Command_Greet.Member != null)
                     await _Command_Greet.RespondAsync(
                         $"Hello, {_Command_Greet.Member.Mention}! Welcome to the Game News Bot!");
                 
             }
+            
+        }
+        
+        
+        public class BotInfo : BaseCommandModule
+        {
+            [Command("BotInfo")]
+            [Description("BotInfo Command that displays bot information")]
+            [RequirePrefixes("!")]
+            public async Task BotInfoAsync (CommandContext ctxServerInfo)
+            {
+                
+                var msg = new DiscordEmbedBuilder()
+                    .WithAuthor("Game News Bot")
+                    .WithTitle("Game News Bot Information")
+                    .WithDescription(@"Discord Bot that will retrieve the latest game news. If you want a specific Game please let me know :)")
+                    .WithFooter("Powered by DSharpPlus")
+                    .WithColor(DiscordColor.DarkBlue);
+                await  ctxServerInfo.RespondAsync(msg);
+            }
+            
+            
             
         }
         
