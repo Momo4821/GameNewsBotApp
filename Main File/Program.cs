@@ -1,18 +1,13 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.EventArgs;
 using GameNewsBotApp.Commands;
 using GameNewsBotApp.config;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Reflection;
+using System.Linq;
 using System.Threading.Tasks;
-using Castle.Components.DictionaryAdapter.Xml;
-using  GameNewsBotApp.Logging;
-using Serilog;
-
-using GameNewsBotApp.config;
-using GameNewsBotApp.Slash_Commands;
+using DSharpPlus.EventArgs;
+using GameNewsBotApp.CreateChannels;
 
 namespace GameNewsBotApp
 {
@@ -20,20 +15,15 @@ namespace GameNewsBotApp
 
     internal class Program
     {
-        
         public static DiscordClient Client;
         public static DiscordConfiguration discordconifig;
-        
-        public static string [] prefix {get;set;}
-       // public static string [] slash {get;set;}
-       
-
         public static CommandsNextExtension commands { get; set; }
-
         
-        static async Task Main(string[] args)
+       static async Task Main(string[] args)
         {
-            
+           
+         
+         
             var Tokenprovider = new Get_Token();
             var token = Tokenprovider?.token;
             Environment.SetEnvironmentVariable("BOT_TOKEN", "Token"); //Bot Token set for security
@@ -49,10 +39,11 @@ namespace GameNewsBotApp
                 Token = token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-              //  MinimumLogLevel = LogLevel.Information,
-               // LogTimestampFormat = "yyyy-MM-dd HH:mm:ss",
+                MinimumLogLevel = LogLevel.Information,
+               LogTimestampFormat = "yyyy-MM-dd HH:mm:ss",
                 MessageCacheSize = 1000,
-              
+             
+
             };
             
             Client = new DiscordClient(discordconifig);
@@ -66,14 +57,14 @@ namespace GameNewsBotApp
                 EnableMentionPrefix = true,
                 EnableDms = true,
                 EnableDefaultHelp = false,
-                DmHelp = true
-
+                DmHelp = true,
             };
             
-      
-         
+
+            
 
             commands = Client.UseCommandsNext(Discord_Bot_Commands);
+            
             //Basic Commands
             commands.RegisterCommands<Basic_Commands.Ping_command>();
             commands.RegisterCommands<Basic_Commands.Greet_Command>();
@@ -88,22 +79,24 @@ namespace GameNewsBotApp
             commands.RegisterCommands<News_Command.PalWorld>();
             
           
-            
+            commands.RegisterCommands<AdministratorCommands.KickCommand>();
+            commands.RegisterCommands<AdministratorCommands.BanCommand>();
+            commands.RegisterCommands<AdministratorCommands.CreateChannelCommand>();
             //DatbaseCommands
-            
+            var services = new CreateChannels.CreateChannels();
+        
             await Client.ConnectAsync(); // Connect the client to Discord
-            await Task.Delay(-1);  // Wait indefinitely to keep the application running
-
-        }
+   
         
-        
-        
-        
+            
+      await Task.Delay(-1);  // Wait indefinitely to keep the application running
+ 
       
         
         
-        
-        
+  
     }
 
-}
+
+    }
+    }

@@ -39,8 +39,6 @@ public class AdministratorCommands
    
   if(!member.Permissions.HasPermission(Permissions.BanMembers))
    member.SendMessageAsync("You don't have permission to use this command");
-  
-  
  }
  
  public static void ValidateTimeoutCommand (CommandContext ctx, DiscordMember member)
@@ -48,13 +46,9 @@ public class AdministratorCommands
   if(member.IsBot)
    ctx.RespondAsync("You can't Kick a Bot");
   
- 
   if(member.Id == ctx.Member.Id)
    ctx.RespondAsync("You can't Timeout Yourself");
   
-  
-  
-   
   if(!member.Permissions.HasPermission(Permissions.ModerateMembers))
    member.SendMessageAsync("You don't have permission to use this command");
  }
@@ -75,18 +69,6 @@ public class AdministratorCommands
    
   };
   
-
-
-
-public void CreateKickChannel (DiscordMember member, CommandContext ctx)
-{
- // create locked channel for admin users onl
- 
- 
- 
-}  
-
-
   [Command("kick")]
   [Description("Kick Command")]
   [RequirePrefixes("!")]
@@ -102,10 +84,15 @@ public void CreateKickChannel (DiscordMember member, CommandContext ctx)
     await member.SendMessageAsync($"You have been kicked for the following reason: {reason} ");
     
    }
+   else
+   {
+    
+   }
    
   }
-  
-  
+ }
+    
+ 
  public class BanCommand: BaseCommandModule
  {
   
@@ -125,26 +112,49 @@ public void CreateKickChannel (DiscordMember member, CommandContext ctx)
    
    
    
-   
-   
-   
-
-   
+  }
+  
+}
+ 
+ 
+ public class TimeoutCommand: BaseCommandModule
+ {
+  [Command("timeout")]
+  [Description("Timeout Command")]
+  [RequirePrefixes("!")]
+  [RequireBotPermissions(Permissions.ModerateMembers)]
+  public async Task timeoutcommand(CommandContext CtxTimeout, DiscordMember member)
+  {
+   /*ValidateTimeoutCommand(CtxTimeout, member);
+   await member.TimeoutAsync(duration, "You have been timed out for violating the rules of this server");
+   await CtxTimeout.RespondAsync($"Member {member.Username} has been timed out for {duration.TotalMinutes} minutes.");*/
    
   }
   
-  
-  
  }
-  
  
  
-  
- }
-    
-    
+ public class CreateChannelCommand: BaseCommandModule
+ {
+  [Command("createchannel")]
+  [Description("Create Channel Command")]
+  [RequirePrefixes("!")]
+  [RequireBotPermissions(Permissions.ManageChannels)]
+  public async Task CreateChannel(CommandContext CtxCreateChannel)
+  {
+   var guild = CtxCreateChannel.Guild;
+   var channel = await guild.CreateChannelAsync(
+    "New Channel", 
+    DSharpPlus.ChannelType.Text, 
+    null, 
+    "This is a new channel created by the bot");
+   await CtxCreateChannel.RespondAsync($"Channel {channel.Name} created successfully!");
+   
+  }
+
+  }
+ 
+ 
  
 }
-
-
 }

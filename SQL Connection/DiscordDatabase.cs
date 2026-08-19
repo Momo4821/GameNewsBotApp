@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Data.Sqlite;
+﻿
 
 namespace GameNewsBotApp.SQL_Connection
 {
@@ -7,25 +6,7 @@ namespace GameNewsBotApp.SQL_Connection
     {
         
         
-        public DiscordDatabase ()
-        {
-            var connection = new SqliteConnection("Data Source =DiscordDatabase.db");
-
-
-            try
-            {
-               connection.Open();
-                
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-        
-        
-        
+    
      
         
         
