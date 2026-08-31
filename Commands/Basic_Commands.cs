@@ -55,7 +55,6 @@ namespace GameNewsBotApp.Commands
             
         }
         
-        
         public class BotInfo : BaseCommandModule
         {
             [Command("BotInfo")]
@@ -73,12 +72,6 @@ namespace GameNewsBotApp.Commands
                 await  ctxServerInfo.RespondAsync(msg);
             }
             
-            
-            
         }
-        
     }
-
 }
-
-        

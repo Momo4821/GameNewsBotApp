@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using System.Net.Http;
@@ -6,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 using DSharpPlus;
+using DSharpPlus.Entities;
 using Newtonsoft.Json.Linq;
 
 
@@ -60,7 +63,7 @@ namespace GameNewsBotApp.Commands
             [Description("Marvel Rivals News Command that gets the latest news from Marvel Rivals")]
             [Category("NewsCommand For Marvel")]
             [RequirePrefixes("!")]
-            public async Task Marvel_Command(CommandContext MarvelCommand)
+            public async Task Marvel_Command(CommandContext MarvelCommand, DiscordChannel channel)
             {
                 var response = await _httpClient.GetStringAsync(MarvelApiUrl);
                 JsonDocument doc = JsonDocument.Parse(response);
@@ -72,11 +75,21 @@ namespace GameNewsBotApp.Commands
                     string title = item.GetProperty("title").GetString();
                     string url = item.GetProperty("url").GetString();
                     finalist.Add($"{title} \n {url}");
-                    
                 }
                 
-                var final = string.Join("\n\n",  finalist);
-                await MarvelCommand.RespondAsync(final);
+                if(CreateChannels.ChannelCreationService.CreatedChannelInformation.ContainsKey("game-news-marvel-rivals"))
+                {           
+                   
+                    /*if(MarvelCommand.Channel.Id == )
+                    {
+                        var final = string.Join("\n\n",  finalist);
+                        await MarvelCommand.RespondAsync(final);  
+                        
+                    }*/
+               
+                    
+                }
+               
                 
             }
 
@@ -129,6 +142,8 @@ namespace GameNewsBotApp.Commands
         
         }
     
+        
+        
     }
     }
     

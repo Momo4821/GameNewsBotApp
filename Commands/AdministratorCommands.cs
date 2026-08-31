@@ -1,21 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using System.Threading.Tasks;
 using Discord.Interactions;
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using GameNewsBotApp.CreateChannels;
 
 
 namespace GameNewsBotApp.Commands
 {
 
-public class AdministratorCommands
+public static class AdministratorCommands
 {
+  
  public static void ValidateKickCommand (CommandContext ctx, DiscordMember member)
  {
+
+  
+  
   if(member.IsBot)
    ctx.RespondAsync("You are a bot, You can't Kick members of this sever");
   
@@ -27,7 +32,7 @@ public class AdministratorCommands
  
  }
  
- public static void ValidateBanCommand (CommandContext ctx, DiscordMember member)
+ public static void ValidateBanCommand (CommandContext ctx, DiscordMember member, DiscordChannel channel)
  {
   if(member.IsBot)
    ctx.RespondAsync("You can't kick a Bot");
@@ -51,12 +56,13 @@ public class AdministratorCommands
   
   if(!member.Permissions.HasPermission(Permissions.ModerateMembers))
    member.SendMessageAsync("You don't have permission to use this command");
+  
+  
+  
  }
  
  public class KickCommand: BaseCommandModule
  {
-  
-
   List<string>kickreasons = new List<string>
   {
    "You have violated the rules of this channel", //index  0 
@@ -65,8 +71,6 @@ public class AdministratorCommands
    "You have been kicked for being toxic", //index 3
    "You have been kicked for being disrespectful", //index 4
    "You have been kicked for being a troll" //index 5
-   
-   
   };
   
   [Command("kick")]
@@ -105,11 +109,10 @@ public class AdministratorCommands
   };
   
   
-  public async Task BanComma(CommandContext CtxBan, DiscordMember memeber)
+  public async Task BanComma(CommandContext CtxBan, DiscordMember memeber, DiscordChannel channel)
   {
    
-   ValidateBanCommand(CtxBan, memeber);
-   
+   ValidateBanCommand(CtxBan, memeber,channel);
    
    
   }
@@ -132,29 +135,5 @@ public class AdministratorCommands
   }
   
  }
- 
- 
- public class CreateChannelCommand: BaseCommandModule
- {
-  [Command("createchannel")]
-  [Description("Create Channel Command")]
-  [RequirePrefixes("!")]
-  [RequireBotPermissions(Permissions.ManageChannels)]
-  public async Task CreateChannel(CommandContext CtxCreateChannel)
-  {
-   var guild = CtxCreateChannel.Guild;
-   var channel = await guild.CreateChannelAsync(
-    "New Channel", 
-    DSharpPlus.ChannelType.Text, 
-    null, 
-    "This is a new channel created by the bot");
-   await CtxCreateChannel.RespondAsync($"Channel {channel.Name} created successfully!");
-   
-  }
-
-  }
- 
- 
- 
 }
 }

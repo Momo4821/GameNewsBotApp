@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using GameNewsBotApp.CreateChannels;
 
@@ -15,9 +16,10 @@ namespace GameNewsBotApp
 
     internal class Program
     {
-        public static DiscordClient Client;
-        public static DiscordConfiguration discordconifig;
-        public static CommandsNextExtension commands { get; set; }
+        private static DiscordClient Client;
+        private static DiscordConfiguration discordconifig;
+        private static CommandsNextExtension commands { get; set; }
+        
         
        static async Task Main(string[] args)
         {
@@ -81,14 +83,36 @@ namespace GameNewsBotApp
           
             commands.RegisterCommands<AdministratorCommands.KickCommand>();
             commands.RegisterCommands<AdministratorCommands.BanCommand>();
-            commands.RegisterCommands<AdministratorCommands.CreateChannelCommand>();
             //DatbaseCommands
-            var services = new CreateChannels.CreateChannels();
+            var services = new ChannelCreationService.CreateChannels();
         
             await Client.ConnectAsync(); // Connect the client to Discord
    
-        
+            Client.GuildAvailable += async (sender, eventArgs) =>
+            {
             
+                 await services.CreateChannelAsync(eventArgs.Guild);
+                 await services.StoreChannelInfomrationAsync(eventArgs.Guild);
+             
+            };
+            
+            Client.GuildCreated += async (sender, eventArgs) =>
+            {
+                
+                await services.CreateChannelAsync(eventArgs.Guild); 
+                await services.StoreChannelInfomrationAsync(eventArgs.Guild);
+                
+                
+               
+            };
+            
+            Client.ChannelDeleted+=  async (sender, eventArgs) =>
+            {
+                await services.CreateChannelAsync(eventArgs.Channel.Guild);
+                await services.StoreChannelInfomrationAsync(eventArgs.Guild);
+                
+            };
+                
       await Task.Delay(-1);  // Wait indefinitely to keep the application running
  
       
