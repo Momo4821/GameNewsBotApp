@@ -134,6 +134,22 @@ public static class AdministratorCommands
    
   }
   
+  
+  public class SetLogLevelDebug : BaseCommandModule
+  {
+   [Command("LogLevelDebug")]
+   [Description("Set LogLevel Debug")]
+   [RequirePrefixes("!")]
+   [RequireBotPermissions(Permissions.Administrator)]
+   
+   public async Task setlogleveldebug(CommandContext ctxsetlogleveldebug)
+   
+   
+  }
+  
+  
+  
+  
  }
 }
 }

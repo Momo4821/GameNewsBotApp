@@ -1,92 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 namespace GameNewsBotApp.CreateChannels
 {
-    
-    
-public static class ChannelCreationService
-{
-    public static Dictionary<string, ulong> CreatedChannelInformation {get;set;} = new Dictionary<string, ulong>(); 
-    //public class Dictionary<TKey,TValue>
-    public static List<string> ChannelNames {get;} = new List<string>
-    {
-        "game-news-marvel-rivals",
-        "game-news-risk-of-rain",
-        "game-news-tf2",
-        "game-news-palworld"
-    };
-
+ public interface ICreateChannels
+ {
    
+  Task CreateChannelAsync(DiscordGuild guild);
+  Task StoreChannelInfomrationAsync(DiscordGuild guild);
+  
+ }
+ public class CreateChannelsService : ICreateChannels
+ {
+  
+  public static CreateChannelsService CreateChannelsServiceInstance {get;} = new CreateChannelsService();
+ public Dictionary<string, ulong> CreatedChannelInformation {get;set;} = new Dictionary<string, ulong>();
 
-public interface ICreateChannels
-{
-    Task CreateChannelAsync(DiscordGuild guild);
-    Task StoreChannelInfomrationAsync(DiscordGuild guild);
+ 
+ public List<string> ChannelNames {get;} = new List<string>
+ {
+  "game-news-marvel-rivals",
+  "game-news-risk-of-rain",
+  "game-news-tf2",
+  "game-news-palworld"
+ };
+   public async Task CreateChannelAsync(DiscordGuild guild)
+   {
     
-}
-
-
-public class CreateChannels : ICreateChannels
-{
     
-    public async Task CreateChannelAsync(DiscordGuild guild)
+    string createcategory = "game-news"; 
+        
+    if(!guild.Channels.Values.Any(c => c.Name == createcategory && c.Type == ChannelType.Category))
     {
-        string category = "game-news"; 
+     await guild.CreateChannelCategoryAsync(
+      createcategory,
+      null,
+      0,
+      "category for news"
         
-            if(!guild.Channels.Values.Any(c => c.Name == category && c.Type == ChannelType.Category))
-            {
-                await guild.CreateChannelCategoryAsync(
-                    category,
-                    null,
-                    0,
-                    "category for news"
-        
-                ); 
-                }
-        DiscordChannel channel = guild.Channels.Values.Single(c => c.Name == category);
-        foreach (string channelName in ChannelNames)
-        {
-            if (!guild.Channels.Values.Any(c => c.Name == channelName))
-            {
+     ); 
+    }
+    DiscordChannel category = guild.Channels.Values.Single(c => c.Name == createcategory);
+    foreach (var channelName in ChannelNames)
+    {
+     if (!guild.Channels.Values.Any(c => c.Name == channelName))
+     {
                 
-                await guild.CreateChannelAsync(
-                    name: channelName, 
-                    type: ChannelType.Text,
-                    parent: channel,
-                    topic: null,
-                    nsfw: false);
+      await guild.CreateChannelAsync(
+       name: channelName, 
+       type: ChannelType.Text,
+       parent: category,
+       topic: null,
+       nsfw: false);
                 
                
-            }
-            
-        }
-        
-    }
-    
-    public async Task StoreChannelInfomrationAsync (DiscordGuild guild)
-    {
-  
-        
-        foreach (var channels in guild.Channels.Values)
-        {
-          string channelname = channels.Name;
-          ulong channelid = channels.Id;
+     }
 
-            
-            if (!CreatedChannelInformation.ContainsKey(channelname))
-            {
-                CreatedChannelInformation.Add(channelname, channelid);     
-            }
-           
-            Console.WriteLine(channelname + channelid);
-        }
+   
+    
+     
+    }
         
-        }
+   }
+  
+   public async Task StoreChannelInfomrationAsync (DiscordGuild guild)
+   {
+    foreach (var channelName in guild.Channels.Values)
+    {
+ if(ChannelNames.Exists(c => c.Equals(channelName.Name, StringComparison.OrdinalIgnoreCase)))
+ {
+
+  CreatedChannelInformation[channelName.Name] = channelName.Id;
+  
+ }
+    }
+ }
+   
 }
-}
-}
+ }
 

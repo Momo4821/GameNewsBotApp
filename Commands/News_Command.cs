@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Web;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using GameNewsBotApp.CreateChannels;
 using Newtonsoft.Json.Linq;
 
 
@@ -17,9 +18,9 @@ namespace GameNewsBotApp.Commands
     
     
     public class News_Command
+    
     {
-
-
+     
      private static string MarvelApiUrl = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=2767030&count=3&maxlength=300&format=json";
      private static string TF2_NewsApiUrl = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=440&count=3&maxlength=300&format=json"; 
      private static string RiskOfRainURL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=440&count=3&maxlength=300&format=json";
@@ -30,6 +31,7 @@ namespace GameNewsBotApp.Commands
             [Command("TF2")]
             [Description("")]
             [Category("NewsCommand For TF2")]
+            [RequirePrefixes("!")]
             public async Task TF2_Command(CommandContext TF2Command)
             { 
             var response = await _httpClient.GetStringAsync(TF2_NewsApiUrl);
@@ -59,11 +61,9 @@ namespace GameNewsBotApp.Commands
             
         public class MarvelRivals : BaseCommandModule
         {
-            [Command("Marvel")]
-            [Description("Marvel Rivals News Command that gets the latest news from Marvel Rivals")]
-            [Category("NewsCommand For Marvel")]
-            [RequirePrefixes("!")]
-            public async Task Marvel_Command(CommandContext MarvelCommand, DiscordChannel channel)
+         [Command("Marvel")]
+         [Description("Marvel Rivals News")]
+            public async Task MarvelRivalsCommand(CommandContext MarvelRivalsCommand)
             {
                 var response = await _httpClient.GetStringAsync(MarvelApiUrl);
                 JsonDocument doc = JsonDocument.Parse(response);
@@ -76,20 +76,23 @@ namespace GameNewsBotApp.Commands
                     string url = item.GetProperty("url").GetString();
                     finalist.Add($"{title} \n {url}");
                 }
-                
-                if(CreateChannels.ChannelCreationService.CreatedChannelInformation.ContainsKey("game-news-marvel-rivals"))
-                {           
-                   
-                    /*if(MarvelCommand.Channel.Id == )
+                if(CreateChannelsService.CreateChannelsServiceInstance.CreatedChannelInformation.TryGetValue("game-news-marvel-rivals", out ulong channelId))
+                {
+              
+                    if(MarvelRivalsCommand.Channel.Id == channelId)
                     {
                         var final = string.Join("\n\n",  finalist);
-                        await MarvelCommand.RespondAsync(final);  
-                        
-                    }*/
-               
+                        await MarvelRivalsCommand.RespondAsync(final);
+                    }
+                    else
+                    {
+                        await MarvelRivalsCommand.RespondAsync("This command can only be used in the designated channel for Marvel Rivals news.");
+                    }
+                    
                     
                 }
-               
+
+              
                 
             }
 
@@ -125,6 +128,7 @@ namespace GameNewsBotApp.Commands
         [Description("Palword NewsCommand that gets the latest news from Palword Steam API")]
         public async Task PalWorldCommand(CommandContext PalWorldCommand)
         {
+            /*
             var respone = await _httpClient.GetStringAsync(PalWorldURL);
             JsonDocument doc = JsonDocument.Parse(respone);
             JsonElement appnews = doc.RootElement;
@@ -138,12 +142,19 @@ namespace GameNewsBotApp.Commands
             }
             var final = string.Join("\n\n",  finalist);
             await PalWorldCommand.RespondAsync(final);
-        }
+            */
+            
+            
         
         }
-    
+        
+        }
         
         
+        public static async Task ParseJson(string json,string response)
+        {
+        
+        }
     }
     }
     
