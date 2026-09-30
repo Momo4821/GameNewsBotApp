@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Serilog;
+
 namespace GameNewsBotApp.CreateChannels
 {
  public interface ICreateChannels
@@ -15,13 +17,16 @@ namespace GameNewsBotApp.CreateChannels
   Task CreateChannelAsync(DiscordGuild guild);
   Task StoreChannelInfomrationAsync(DiscordGuild guild);
   
+  Task CreateLogChnanel(DiscordGuild guild);
+  
+  
  }
  public class CreateChannelsService : ICreateChannels
  {
   
   public static CreateChannelsService CreateChannelsServiceInstance {get;} = new CreateChannelsService();
  public Dictionary<string, ulong> CreatedChannelInformation {get;set;} = new Dictionary<string, ulong>();
-
+ public ulong modlogchannelid {get;set;}
  
  public List<string> ChannelNames {get;} = new List<string>
  {
@@ -61,13 +66,35 @@ namespace GameNewsBotApp.CreateChannels
                 
                
      }
-
-   
-    
-     
     }
         
    }
+   
+   public async Task CreateLogChnanel(DiscordGuild guild)
+   {
+   
+  string channelname = "mod-log";
+    if(!guild.Channels.Values.Any( c => c.Name == channelname))
+    {
+    
+     var create=     await guild.CreateChannelAsync(
+      name: channelname,
+      type: ChannelType.Text,
+      parent: null,
+      topic: null,
+      nsfw: false
+      
+     );
+     modlogchannelid = create.Id;
+
+    }
+    
+    
+    
+    
+   }
+   
+   
   
    public async Task StoreChannelInfomrationAsync (DiscordGuild guild)
    {

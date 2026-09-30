@@ -8,6 +8,8 @@ using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using GameNewsBotApp.CreateChannels;
+using GameNewsBotApp.Logging;
+using Serilog;
 
 
 namespace GameNewsBotApp.Commands
@@ -15,11 +17,11 @@ namespace GameNewsBotApp.Commands
 
 public static class AdministratorCommands
 {
+ public static LoggingData LoggingData;
+ 
   
  public static void ValidateKickCommand (CommandContext ctx, DiscordMember member)
  {
-
-  
   
   if(member.IsBot)
    ctx.RespondAsync("You are a bot, You can't Kick members of this sever");
@@ -46,15 +48,13 @@ public static class AdministratorCommands
    member.SendMessageAsync("You don't have permission to use this command");
  }
  
- public static void ValidateTimeoutCommand (CommandContext ctx, DiscordMember member)
+ public static void ValidateLogSwitchCommand(CommandContext ctx, DiscordMember member)
  {
   if(member.IsBot)
-   ctx.RespondAsync("You can't Kick a Bot");
+   ctx.RespondAsync("You can't swtich log level");
   
-  if(member.Id == ctx.Member.Id)
-   ctx.RespondAsync("You can't Timeout Yourself");
   
-  if(!member.Permissions.HasPermission(Permissions.ModerateMembers))
+  if(!member.Permissions.HasPermission(Permissions.Administrator))
    member.SendMessageAsync("You don't have permission to use this command");
   
   
@@ -142,14 +142,33 @@ public static class AdministratorCommands
    [RequirePrefixes("!")]
    [RequireBotPermissions(Permissions.Administrator)]
    
-   public async Task setlogleveldebug(CommandContext ctxsetlogleveldebug)
+   public async Task setlogleveldebug(CommandContext ctxsetlogleveldebug, DiscordMember member)
+   {
+    ValidateLogSwitchCommand(ctxsetlogleveldebug,member);
+    LoggingData.SetLogLevelDebug();
+    Log.Information("Log Level has been swtiched to Debug");
+    
+   }
    
+   
+   public class SetLogLevelInformation : BaseCommandModule
+   {
+    public async Task setloglevelinformation(CommandContext ctxsetloglevelinformation, DiscordMember member)
+    {
+     ValidateLogSwitchCommand(ctxsetloglevelinformation,member);
+     LoggingData.SetLogLevelInformation();
+     
+     if(CreateChannelsService.CreateChannelsServiceInstance.modlogchannelid == ctxsetloglevelinformation.Channel.Id)
+     {}
+     
+     Log.Information("Log Level has been switched to Information");
+     
+    }
+    
+    
+   }
    
   }
-  
-  
-  
-  
  }
 }
 }

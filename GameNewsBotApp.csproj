@@ -281,7 +281,7 @@
     <Compile Include="Commands\Basic_Commands.cs" />
     <Compile Include="Commands\News_Command.cs" />
     <Compile Include="ConfigToken\Get_Token.cs" />
-    <Compile Include="CreateChannels\CreateNewsChannels.cs" />
+    <Compile Include="CreateChannels\CreateChannels.cs" />
     <Compile Include="Logging\LoggingData.cs" />
     <Compile Include="Main File\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

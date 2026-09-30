@@ -101,7 +101,7 @@ namespace GameNewsBotApp
             Client.GuildAvailable += async (sender, eventArgs) =>
             {
              
-                Logger.Information("GuildAvailable");
+                Log.Information("GuildAvailable");
                 await _createChannels.CreateChannelAsync(eventArgs.Guild);
            
                 await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
@@ -112,20 +112,23 @@ namespace GameNewsBotApp
             Client.GuildCreated += async (sender, eventArgs) =>
             {
                await _createChannels.CreateChannelAsync(eventArgs.Guild);
-               Logger.Information($"GuildCreated Event: Channels created for guild: {eventArgs.Guild.Name}, {string.Join(", ", eventArgs.Guild.Channels.Values)}");
+               Log.Information($"GuildCreated Event: Channels created for guild: {eventArgs.Guild.Name}, {string.Join(", ", eventArgs.Guild.Channels.Values)}");
         
+               
+              
+               
                await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
-               Logger.Information($"GuildCreated Event:Channel information stored for guild: {eventArgs.Guild.Name}, {string.Join(", ", eventArgs.Guild.Channels.Values)}");
+               Log.Information($"GuildCreated Event:Channel information stored for guild: {eventArgs.Guild.Name}, {string.Join(", ", eventArgs.Guild.Channels.Values)}");
      
             };
             
             Client.ChannelDeleted += async (sender, eventArgs) =>
             {
       
-                Logger.Warning($"ChannelDeleted Event: {eventArgs.Channel.Name} in guild: {eventArgs.Guild.Name}. Recreating channels Designated for Channels For news.");
+                Log.Warning($"ChannelDeleted Event: {eventArgs.Channel.Name} in guild: {eventArgs.Guild.Name}. Recreating channels Designated for Channels For news.");
                 
                 await _createChannels.CreateChannelAsync(eventArgs.Guild);
-                Logger.Information($"ChannelDeleted Event: Channels recreated {eventArgs.Channel.Name} successfully for guild: {eventArgs.Guild.Name}");
+                Log.Information($"ChannelDeleted Event: Channels recreated {eventArgs.Channel.Name} successfully for guild: {eventArgs.Guild.Name}");
               
            
                 };
@@ -134,17 +137,17 @@ namespace GameNewsBotApp
              //When a cHannel is deleted, recreate the channels and store the information again
             Client.ChannelCreated += async (sender, eventArgs) =>
             {
-                Logger.Information("News Channels Created...Storing Information");
+                Log.Information("News Channels Created...Storing Information");
                 await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);      
-                Logger.Information("Channels Stored Information Updated");  
+                Log.Information("Channels Stored Information Updated");  
             };
 
                 
                 
                 
-             
+            Log.Information("Bot is Running");   
             await Task.Delay(-1);  // Wait indefinitely to keep the application running
-            Logger.Information("Bot is Running");
+          
     
     }
     }

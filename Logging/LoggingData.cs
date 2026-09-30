@@ -30,6 +30,10 @@ namespace GameNewsBotApp.Logging
         {
             _levelSwitch.MinimumLevel = LogEventLevel.Information;
             Log.Information("Log Level set to Information.");
+            
+         
+            
+            
         }
         
         

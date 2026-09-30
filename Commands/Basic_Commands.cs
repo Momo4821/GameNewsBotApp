@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using GameNewsBotApp.Logging;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace GameNewsBotApp.Commands
@@ -32,7 +33,7 @@ namespace GameNewsBotApp.Commands
 
                 await _command_Ping.RespondAsync(
                     $"Pong! latency is {_command_Ping.Client.Ping}ms. From {_command_Ping.User.Username}");
-                
+                Log.Information($"{_command_Ping.User} has used the Ping Command");
 
             }
 
@@ -50,6 +51,7 @@ namespace GameNewsBotApp.Commands
                 if (_Command_Greet.Member != null)
                     await _Command_Greet.RespondAsync(
                         $"Hello, {_Command_Greet.Member.Mention}! Welcome to the Game News Bot!");
+                Log.Information($"{_Command_Greet.User} has used the Greet Commmand");
                 
             }
             
@@ -70,6 +72,7 @@ namespace GameNewsBotApp.Commands
                     .WithFooter("Powered by DSharpPlus")
                     .WithColor(DiscordColor.DarkBlue);
                 await  ctxServerInfo.RespondAsync(msg);
+                Log.Information($"{ctxServerInfo.User} has used the BotInfo Command");
             }
             
         }
