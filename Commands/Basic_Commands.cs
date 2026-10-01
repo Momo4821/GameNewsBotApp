@@ -17,23 +17,23 @@ namespace GameNewsBotApp.Commands
     
     
     
-    public class Basic_Commands
+    public class BasicCommands
     { 
         
-        public class Ping_command : BaseCommandModule
+        public class PingCommand : BaseCommandModule
         {
             [Command("Ping")]
             [Description("Ping Command that pings user and dispalys latency")]
             [RequirePrefixes("!")]
 
-            public async Task Ping_Command(CommandContext _command_Ping)
+            public async Task Ping_Command(CommandContext commandPing)
             {
 
            
 
-                await _command_Ping.RespondAsync(
-                    $"Pong! latency is {_command_Ping.Client.Ping}ms. From {_command_Ping.User.Username}");
-                Log.Information($"{_command_Ping.User} has used the Ping Command");
+                await commandPing.RespondAsync(
+                    $"Pong! latency is {commandPing.Client.Ping}ms. From {commandPing.User.Username}");
+                Log.Information($"{commandPing.User} has used the Ping Command");
 
             }
 

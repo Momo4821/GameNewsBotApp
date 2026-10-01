@@ -10,6 +10,7 @@ using DSharpPlus.Entities;
 using GameNewsBotApp.CreateChannels;
 using GameNewsBotApp.Logging;
 using Serilog;
+using Serilog.Events;
 
 
 namespace GameNewsBotApp.Commands
@@ -133,11 +134,11 @@ public static class AdministratorCommands
    await CtxTimeout.RespondAsync($"Member {member.Username} has been timed out for {duration.TotalMinutes} minutes.");*/
    
   }
-  
+  }
   
   public class SetLogLevelDebug : BaseCommandModule
   {
-   [Command("LogLevelDebug")]
+   [Command("Debug")]
    [Description("Set LogLevel Debug")]
    [RequirePrefixes("!")]
    [RequireBotPermissions(Permissions.Administrator)]
@@ -148,8 +149,17 @@ public static class AdministratorCommands
     LoggingData.SetLogLevelDebug();
     Log.Information("Log Level has been swtiched to Debug");
     
+    if(LoggingData.GetLogLevel() == LogEventLevel.Debug)
+    {
+     await ctxsetlogleveldebug.RespondAsync("Log Level has been switched to Debug");
+    }
+    else
+    {
+     await ctxsetlogleveldebug.RespondAsync("Log Level has not been switched to Debug");
+    }
+    
    }
-   
+   }
    
    public class SetLogLevelInformation : BaseCommandModule
    {
@@ -158,17 +168,16 @@ public static class AdministratorCommands
      ValidateLogSwitchCommand(ctxsetloglevelinformation,member);
      LoggingData.SetLogLevelInformation();
      
-     if(CreateChannelsService.CreateChannelsServiceInstance.modlogchannelid == ctxsetloglevelinformation.Channel.Id)
-     {}
-     
-     Log.Information("Log Level has been switched to Information");
-     
+     if(CreateChannelsService.CreateChannelsServiceInstance.Modlogchannelid == ctxsetloglevelinformation.Channel.Id)
+     {
+      
+      ValidateLogSwitchCommand(ctxsetloglevelinformation,member);
+      LoggingData.SetLogLevelInformation();
+      Log.Information("Log Level has been swtiched to Information");
+      
+      }
     }
-    
-    
    }
-   
+ 
   }
  }
-}
-}

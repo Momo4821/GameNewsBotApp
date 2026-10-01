@@ -19,15 +19,15 @@ namespace GameNewsBotApp.Commands
      
      private static string MarvelApiUrl = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=2767030&count=3&maxlength=300&format=json";
      private static string TF2_NewsApiUrl = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=440&count=3&maxlength=300&format=json"; 
-     private static string RiskOfRainURL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=440&count=3&maxlength=300&format=json";
+     private static string RiskOfRainURL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=632360&count=3&maxlength=300&format=json";
      private static string PalWorldURL = "https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=440&count=3&maxlength=300&format=json";
      private static HttpClient  _httpClient = new HttpClient();   
      
         public class Tf2Command : BaseCommandModule
         {
             [Command("TF2")]
-            [Description("")]
-            [Category("NewsCommand For TF2")]
+            [Description("Team Fortress 2 Game News")]
+            [Category("News")]
             [RequirePrefixes("!")]
             public async Task TF2_Command(CommandContext ctxTF2Command)
             { 
@@ -35,7 +35,7 @@ namespace GameNewsBotApp.Commands
             {
                 if(ctxTF2Command.Channel.Id == channelid)
                 {
-                    await ParseJson(TF2_NewsApiUrl,ctxTF2Command);
+                    await ParseJson(ctxTF2Command,TF2_NewsApiUrl);
                     Log.Information($"User {ctxTF2Command.User} has used the TF2 Command");
                     
                 }
@@ -49,20 +49,21 @@ namespace GameNewsBotApp.Commands
             }
                 
             
-        }
+            }
             }
             
         public class MarvelRivals : BaseCommandModule
         {
          [Command("Marvel")]
          [Description("Marvel Rivals News")]
+         [Category("News")]
+         [RequirePrefixes("!")]
             public async Task MarvelRivalsCommand(CommandContext ctxMarvelRivalsCommand)
             {
-                
-                if(CreateChannelsService.CreateChannelsServiceInstance.CreatedChannelInformation.TryGetValue("game-news-marvel", out ulong channelId))
+                if(CreateChannelsService.CreateChannelsServiceInstance.CreatedChannelInformation.TryGetValue("game-news-marvel-rivals", out ulong channelId))
                  if(ctxMarvelRivalsCommand.Channel.Id == channelId)
                  {
-                     await ParseJson(MarvelApiUrl, ctxMarvelRivalsCommand);
+                     await ParseJson(ctxMarvelRivalsCommand,MarvelApiUrl);
                      Log.Information($"{ctxMarvelRivalsCommand.User} has used the MarvelRivals Command in channel {ctxMarvelRivalsCommand.Channel}");
                  }
                  else
@@ -80,13 +81,16 @@ namespace GameNewsBotApp.Commands
         
         public class RiskOfRain: BaseCommandModule
         {
-            [Description("Risk of rain NewsCommand that gets the lastest news from Steam API")]   
+            [Command("Rain")]
+            [Description("Risk of rain news")] 
+            [Category("News")]
+            [RequirePrefixes("!")]
             public async Task RiskOfRainCommand(CommandContext ctxRiskOfRainCommand)
             {
                 if(CreateChannelsService.CreateChannelsServiceInstance.CreatedChannelInformation.TryGetValue("game-news-risk-of-rain", out ulong channelid))
                 if(ctxRiskOfRainCommand.Channel.Id == channelid)
                 {
-                    await ParseJson(RiskOfRainURL, ctxRiskOfRainCommand);
+                    await ParseJson(ctxRiskOfRainCommand, RiskOfRainURL);
                     Log.Information($"{ctxRiskOfRainCommand.User} has used the Risk Of Rains Command in the channel {ctxRiskOfRainCommand.Channel}");
                 }
                 else
@@ -97,19 +101,22 @@ namespace GameNewsBotApp.Commands
                     
           
             
-        }
+            }
         }
         
         public class PalWorld : BaseCommandModule
         { 
-        [Description("Palword NewsCommand that gets the latest news from Palword Steam API")]
+        [Command("PalWorld")]    
+        [Description("Palword News")]
+        [Category("News")]
+        [RequirePrefixes("!")]
         public async Task PalWorldCommand(CommandContext ctxPalWorldCommand)
         {
             if(CreateChannelsService.CreateChannelsServiceInstance.CreatedChannelInformation.TryGetValue("game-news-palworld", out ulong channelid))
             
                 if(ctxPalWorldCommand.Channel.Id == channelid)
                 {
-                    await ParseJson(PalWorldURL, ctxPalWorldCommand);
+                    await ParseJson(ctxPalWorldCommand, PalWorldURL);
                     Log.Information($"User {ctxPalWorldCommand.User} has used the Palword Command");           
                     
                 }
@@ -126,20 +133,23 @@ namespace GameNewsBotApp.Commands
         }
         
         
-        public static async Task ParseJson(string httpurl, CommandContext ctx)
+        public static async Task ParseJson(CommandContext ctx,string httpurl)
         {
             
            var response = await _httpClient.GetStringAsync(httpurl);
             JsonDocument doc = JsonDocument.Parse(response);
-            JsonElement appnews = doc.RootElement;
+            JsonElement root = doc.RootElement;
+            JsonElement appnews = root.GetProperty("appnews");
             List<string>finalList = new List<string>();
             
             foreach (JsonElement item in appnews.GetProperty("newsitems").EnumerateArray())
             {
+                
                 string title = item.GetProperty("title").GetString();
                 string url = item.GetProperty("url").GetString();
                 finalList.Add($"{title} \n {url}");
                 
+             
             }
             
             var final = string.Join("\n\n", finalList);

@@ -26,7 +26,7 @@ namespace GameNewsBotApp.CreateChannels
   
   public static CreateChannelsService CreateChannelsServiceInstance {get;} = new CreateChannelsService();
  public Dictionary<string, ulong> CreatedChannelInformation {get;set;} = new Dictionary<string, ulong>();
- public ulong modlogchannelid {get;set;}
+ public ulong Modlogchannelid {get;set;}
  
  public List<string> ChannelNames {get;} = new List<string>
  {
@@ -73,6 +73,19 @@ namespace GameNewsBotApp.CreateChannels
    public async Task CreateLogChnanel(DiscordGuild guild)
    {
    
+    string createcategory = "mod"; 
+        
+    if(!guild.Channels.Values.Any(c => c.Name == createcategory && c.Type == ChannelType.Category))
+    {
+     await guild.CreateChannelCategoryAsync(
+      createcategory,
+      null,
+      0,
+      "category for news"
+        
+     );
+    
+     DiscordChannel channel = guild.Channels.Values.Single(c => c.Name == createcategory);
   string channelname = "mod-log";
     if(!guild.Channels.Values.Any( c => c.Name == channelname))
     {
@@ -80,35 +93,29 @@ namespace GameNewsBotApp.CreateChannels
      var create=     await guild.CreateChannelAsync(
       name: channelname,
       type: ChannelType.Text,
-      parent: null,
+      parent: channel,
       topic: null,
       nsfw: false
       
      );
-     modlogchannelid = create.Id;
-
+     Modlogchannelid = create.Id;
     }
-    
-    
-    
-    
    }
-   
-   
-  
+ }
    public async Task StoreChannelInfomrationAsync (DiscordGuild guild)
    {
     foreach (var channelName in guild.Channels.Values)
     {
- if(ChannelNames.Exists(c => c.Equals(channelName.Name, StringComparison.OrdinalIgnoreCase)))
- {
+     if(ChannelNames.Exists(c => c.Equals(channelName.Name, StringComparison.OrdinalIgnoreCase)))
+     {
 
-  CreatedChannelInformation[channelName.Name] = channelName.Id;
+      CreatedChannelInformation[channelName.Name] = channelName.Id;
   
- }
+     }
     }
- }
    
-}
+   }
+   }
  }
+ 
 

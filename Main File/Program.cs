@@ -77,9 +77,9 @@ namespace GameNewsBotApp
             commands = Client.UseCommandsNext(Discord_Bot_Commands);
             
             //Basic Commands
-            commands.RegisterCommands<Basic_Commands.Ping_command>();
-            commands.RegisterCommands<Basic_Commands.Greet_Command>();
-            commands.RegisterCommands<Basic_Commands.BotInfo>();
+            commands.RegisterCommands<BasicCommands.PingCommand>();
+            commands.RegisterCommands<BasicCommands.Greet_Command>();
+            commands.RegisterCommands<BasicCommands.BotInfo>();
             
             
             
@@ -90,9 +90,12 @@ namespace GameNewsBotApp
             commands.RegisterCommands<News_Command.PalWorld>();
             
           
+            //Administrator Commands
             commands.RegisterCommands<AdministratorCommands.KickCommand>();
             commands.RegisterCommands<AdministratorCommands.BanCommand>();
-            //DatbaseCommands
+            commands.RegisterCommands<AdministratorCommands.TimeoutCommand>();
+            commands.RegisterCommands<AdministratorCommands.SetLogLevelDebug>();
+            commands.RegisterCommands<AdministratorCommands.SetLogLevelInformation>();
             
          
             await Client.ConnectAsync(); // Connect the client to Discord
@@ -101,13 +104,12 @@ namespace GameNewsBotApp
             Client.GuildAvailable += async (sender, eventArgs) =>
             {
              
-                Log.Information("GuildAvailable");
+                Log.Information("GuildAvailable Event: CreateChannelsService is creating channels for guild: {GuildName}, {GuildId}", eventArgs.Guild.Name, eventArgs.Guild.Id);
                 await _createChannels.CreateChannelAsync(eventArgs.Guild);
-           
+                await _createChannels.CreateLogChnanel(eventArgs.Guild);
                 await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
              
             };
-            
             
             Client.GuildCreated += async (sender, eventArgs) =>
             {
@@ -115,7 +117,8 @@ namespace GameNewsBotApp
                Log.Information($"GuildCreated Event: Channels created for guild: {eventArgs.Guild.Name}, {string.Join(", ", eventArgs.Guild.Channels.Values)}");
         
                
-              
+               await _createChannels.CreateLogChnanel(eventArgs.Guild);
+               Log.Information($"GuildCreated Event: Log channel created for guild: {eventArgs.Guild.Name}");
                
                await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
                Log.Information($"GuildCreated Event:Channel information stored for guild: {eventArgs.Guild.Name}, {string.Join(", ", eventArgs.Guild.Channels.Values)}");
@@ -125,26 +128,32 @@ namespace GameNewsBotApp
             Client.ChannelDeleted += async (sender, eventArgs) =>
             {
       
-                Log.Warning($"ChannelDeleted Event: {eventArgs.Channel.Name} in guild: {eventArgs.Guild.Name}. Recreating channels Designated for Channels For news.");
+                Log.Warning($"ChannelDeleted Event: {eventArgs.Channel.Name} in guild: {eventArgs.Guild.Name}. Recreating channels Designated for Channels For news and Logs");
+                await _createChannels.CreateLogChnanel(eventArgs.Guild);
                 
                 await _createChannels.CreateChannelAsync(eventArgs.Guild);
                 Log.Information($"ChannelDeleted Event: Channels recreated {eventArgs.Channel.Name} successfully for guild: {eventArgs.Guild.Name}");
-              
-           
                 };
             
         
-             //When a cHannel is deleted, recreate the channels and store the information again
+          
             Client.ChannelCreated += async (sender, eventArgs) =>
             {
+                Log.Information($"ChannelCreated Event: {eventArgs.Channel.Name} in guild: {eventArgs.Guild.Name}");
                 Log.Information("News Channels Created...Storing Information");
                 await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);      
+                await _createChannels.CreateLogChnanel(eventArgs.Guild);
                 Log.Information("Channels Stored Information Updated");  
             };
+            
+            Client.ChannelUpdated += async (sender, eventArgs) =>
+            {
+                await _createChannels.CreateChannelAsync(eventArgs.Guild);
+                await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
+                await _createChannels.CreateLogChnanel(eventArgs.Guild);
+            };
 
-                
-                
-                
+            
             Log.Information("Bot is Running");   
             await Task.Delay(-1);  // Wait indefinitely to keep the application running
           
