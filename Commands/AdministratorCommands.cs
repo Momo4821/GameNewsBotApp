@@ -16,11 +16,8 @@ using Serilog.Events;
 namespace GameNewsBotApp.Commands
 {
 
-public static class AdministratorCommands
+public class AdministratorCommands
 {
- public static LoggingData LoggingData;
- 
-  
  public static void ValidateKickCommand (CommandContext ctx, DiscordMember member)
  {
   
@@ -127,7 +124,7 @@ public static class AdministratorCommands
   [Description("Timeout Command")]
   [RequirePrefixes("!")]
   [RequireBotPermissions(Permissions.ModerateMembers)]
-  public async Task timeoutcommand(CommandContext CtxTimeout, DiscordMember member)
+  public async Task timeoutcommand(CommandContext CtxTimeout)
   {
    /*ValidateTimeoutCommand(CtxTimeout, member);
    await member.TimeoutAsync(duration, "You have been timed out for violating the rules of this server");
@@ -141,41 +138,33 @@ public static class AdministratorCommands
    [Command("Debug")]
    [Description("Set LogLevel Debug")]
    [RequirePrefixes("!")]
-   [RequireBotPermissions(Permissions.Administrator)]
-   
-   public async Task setlogleveldebug(CommandContext ctxsetlogleveldebug, DiscordMember member)
+   public async Task Setlogleveldebug(CommandContext ctxsetlogleveldebug)
    {
-    ValidateLogSwitchCommand(ctxsetlogleveldebug,member);
-    LoggingData.SetLogLevelDebug();
-    Log.Information("Log Level has been swtiched to Debug");
     
-    if(LoggingData.GetLogLevel() == LogEventLevel.Debug)
-    {
-     await ctxsetlogleveldebug.RespondAsync("Log Level has been switched to Debug");
-    }
-    else
-    {
-     await ctxsetlogleveldebug.RespondAsync("Log Level has not been switched to Debug");
-    }
     
-   }
-   }
+
+    await ctxsetlogleveldebug.RespondAsync("Log level has been set to Debug");
    
+    
+   
+   }
+   }
    public class SetLogLevelInformation : BaseCommandModule
    {
-    public async Task setloglevelinformation(CommandContext ctxsetloglevelinformation, DiscordMember member)
+    public async Task setloglevelinformation(CommandContext ctxsetloglevelinformation)
     {
+     DiscordMember member= ctxsetloglevelinformation.Member;
      ValidateLogSwitchCommand(ctxsetloglevelinformation,member);
-     LoggingData.SetLogLevelInformation();
+
      
-     if(CreateChannelsService.CreateChannelsServiceInstance.Modlogchannelid == ctxsetloglevelinformation.Channel.Id)
+     /*if(CreateChannelsService.CreateChannelsServiceInstance.Modlogchannelid == ctxsetloglevelinformation.Channel.Id)
      {
       
       ValidateLogSwitchCommand(ctxsetloglevelinformation,member);
-      LoggingData.SetLogLevelInformation();
+      _loggingData.SetLogLevelInformation();
       Log.Information("Log Level has been swtiched to Information");
       
-      }
+      }*/
     }
    }
  

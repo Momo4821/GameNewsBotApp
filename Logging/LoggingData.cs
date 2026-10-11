@@ -8,47 +8,43 @@ namespace GameNewsBotApp.Logging
 {
     public class LoggingData
     {
-        private readonly LoggingLevelSwitch _levelSwitch;
-        private LoggingData()
+        private static LoggingLevelSwitch loggingLevelSwitch;
+        public static LoggingData LoggingDataInstance { get; } = new LoggingData();
+
+        private LoggingData ()
         {
-      
+           
+            loggingLevelSwitch = new LoggingLevelSwitch();
             
-      Log.Logger = new LoggerConfiguration()
-          .MinimumLevel.Debug()
-          .WriteTo.File("Logs/Logs.Txt", rollingInterval: RollingInterval.Day, outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-          .MinimumLevel.Information()
-          .MinimumLevel.ControlledBy(_levelSwitch)
-          .CreateLogger();
-      
-      
-      
-      
-  }
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.ControlledBy(loggingLevelSwitch)
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+                .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day, outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+                .CreateLogger();
+        }
+     
+        public static void Setloglevelinformation()
+        {
+            loggingLevelSwitch.MinimumLevel = LogEventLevel.Information;
+        }
         
         
-        public void SetLogLevelInformation()
+        public static void Setlogleveldebug()
         {
-            _levelSwitch.MinimumLevel = LogEventLevel.Information;
-            Log.Information("Log Level set to Information.");
+            loggingLevelSwitch.MinimumLevel = LogEventLevel.Debug;
+        }
+        
+        
+        
+        public static LogEventLevel GetLogLevel()
+        {
             
-         
+            return loggingLevelSwitch.MinimumLevel;
             
             
         }
         
         
-        public void SetLogLevelDebug()
-        {
-            _levelSwitch.MinimumLevel = LogEventLevel.Debug;
-            Log.Debug("Log Level set to Debug.");
-        }
+    }
         
-        
-        
-        public LogEventLevel GetLogLevel()
-        {
-            return _levelSwitch.MinimumLevel;
-            
-        }
-}
 }

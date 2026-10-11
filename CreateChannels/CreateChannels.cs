@@ -37,10 +37,7 @@ namespace GameNewsBotApp.CreateChannels
  };
    public async Task CreateChannelAsync(DiscordGuild guild)
    {
-    
-    
     string createcategory = "game-news"; 
-        
     if(!guild.Channels.Values.Any(c => c.Name == createcategory && c.Type == ChannelType.Category))
     {
      await guild.CreateChannelCategoryAsync(
@@ -51,6 +48,7 @@ namespace GameNewsBotApp.CreateChannels
         
      ); 
     }
+    
     DiscordChannel category = guild.Channels.Values.Single(c => c.Name == createcategory);
     foreach (var channelName in ChannelNames)
     {
@@ -64,44 +62,40 @@ namespace GameNewsBotApp.CreateChannels
        topic: null,
        nsfw: false);
                 
-               
+      
      }
     }
         
    }
    
+   
+   
+   
+   
+   
+   
+   
    public async Task CreateLogChnanel(DiscordGuild guild)
    {
    
-    string createcategory = "mod"; 
-        
-    if(!guild.Channels.Values.Any(c => c.Name == createcategory && c.Type == ChannelType.Category))
-    {
-     await guild.CreateChannelCategoryAsync(
-      createcategory,
-      null,
-      0,
-      "category for news"
-        
-     );
-    
-     DiscordChannel channel = guild.Channels.Values.Single(c => c.Name == createcategory);
-  string channelname = "mod-log";
-    if(!guild.Channels.Values.Any( c => c.Name == channelname))
-    {
-    
-     var create=     await guild.CreateChannelAsync(
-      name: channelname,
-      type: ChannelType.Text,
-      parent: channel,
-      topic: null,
-      nsfw: false
-      
-     );
-     Modlogchannelid = create.Id;
+  
+     
     }
-   }
- }
+
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    public async Task StoreChannelInfomrationAsync (DiscordGuild guild)
    {
     foreach (var channelName in guild.Channels.Values)
