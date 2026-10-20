@@ -2,9 +2,9 @@
 
 
 - [Welcome](./Welcome.md)
-- [Chapter 1 - ](./chapter_1.md)
-- [Chapter 2 - ](./chapter_2.md)
-- [Chapter 3 - ](./chapter_3.md)
-- [Chapter 4 - ](./chapter_4.md)
-- [Chapter 5 - ](./chapter_5.md)
+- [Chapter 1 - ](./Chapter_1.md)
+- [Chapter 2 - ](./Chapter_2.md)
+- [Chapter 3 - ](./Chapter_3.md)
+- [Chapter 4 - ](./Chapter_4.md)
+- [Chapter 5 - ](./Chapter_5.md)
 
