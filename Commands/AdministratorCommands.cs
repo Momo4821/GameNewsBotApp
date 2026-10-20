@@ -18,6 +18,7 @@ namespace GameNewsBotApp.Commands
 
 public class AdministratorCommands
 {
+
  public static void ValidateKickCommand (CommandContext ctx, DiscordMember member)
  {
   
@@ -84,7 +85,7 @@ public class AdministratorCommands
    if(reasonindex < kickreasons.Count)
    {
     await member.SendMessageAsync($"You have been kicked for the following reason: {reason} ");
-    
+    Log.Information("");
    }
    else
    {
@@ -107,11 +108,10 @@ public class AdministratorCommands
   };
   
   
-  public async Task BanComma(CommandContext CtxBan, DiscordMember memeber, DiscordChannel channel)
+  public async Task bancommand(CommandContext CtxBan, DiscordMember memeber, DiscordChannel channel)
   {
    
    ValidateBanCommand(CtxBan, memeber,channel);
-   
    
   }
   
@@ -126,9 +126,7 @@ public class AdministratorCommands
   [RequireBotPermissions(Permissions.ModerateMembers)]
   public async Task timeoutcommand(CommandContext CtxTimeout)
   {
-   /*ValidateTimeoutCommand(CtxTimeout, member);
-   await member.TimeoutAsync(duration, "You have been timed out for violating the rules of this server");
-   await CtxTimeout.RespondAsync($"Member {member.Username} has been timed out for {duration.TotalMinutes} minutes.");*/
+
    
   }
   }
@@ -140,13 +138,12 @@ public class AdministratorCommands
    [RequirePrefixes("!")]
    public async Task Setlogleveldebug(CommandContext ctxsetlogleveldebug)
    {
-    
-    
-
-    await ctxsetlogleveldebug.RespondAsync("Log level has been set to Debug");
    
+   LoggingData.Setlogleveldebug();
+     await ctxsetlogleveldebug.RespondAsync("Working!");
+     
     
-   
+    
    }
    }
    public class SetLogLevelInformation : BaseCommandModule
@@ -155,16 +152,13 @@ public class AdministratorCommands
     {
      DiscordMember member= ctxsetloglevelinformation.Member;
      ValidateLogSwitchCommand(ctxsetloglevelinformation,member);
-
-     
-     /*if(CreateChannelsService.CreateChannelsServiceInstance.Modlogchannelid == ctxsetloglevelinformation.Channel.Id)
+     if(CreateChannelsService.CreateChannelsServiceInstance.Modlogchannelid == ctxsetloglevelinformation.Channel.Id)
      {
-      
       ValidateLogSwitchCommand(ctxsetloglevelinformation,member);
-      _loggingData.SetLogLevelInformation();
+      LoggingData.Setloglevelinformation();
       Log.Information("Log Level has been swtiched to Information");
       
-      }*/
+      }
     }
    }
  

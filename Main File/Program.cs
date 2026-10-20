@@ -4,18 +4,14 @@ using GameNewsBotApp.Commands;
 using GameNewsBotApp.config;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
-using DSharpPlus.EventArgs;
 using GameNewsBotApp.CreateChannels;
 using GameNewsBotApp.Logging;
+using GameNewsBotApp.SQLConnection;
 using Serilog;
-using Serilog.Core;
-using Serilog.Extensions.Logging;
-using ILogger = Serilog.ILogger;
+
 
 
 namespace GameNewsBotApp
@@ -24,27 +20,29 @@ namespace GameNewsBotApp
 
     internal class Program
     {
-        private static DiscordClient Client;
-        private static DiscordConfiguration discordconifig;
-        private static CommandsNextExtension commands { get; set; }
+        private static DiscordClient _client;
+        private static DiscordConfiguration _discordconifig;
+        private static CommandsNextExtension Commands { get; set; }
         private  static CreateChannelsService _createChannels;
         private static LoggingData _loggingData;
+        private static DiscordDatabase _discordDatabase;
+      
        static async Task Main(string[] args)
         {
-            
-            _= _loggingData = LoggingData.LoggingDataInstance;
+         
+            _loggingData = LoggingData.LoggingDataInstance;
+            _discordDatabase = DiscordDatabase.DiscordDatabaseInstance;
             var loggerfactory = new LoggerFactory().AddSerilog();
             _createChannels = CreateChannelsService.CreateChannelsServiceInstance;
             var Tokenprovider = new Get_Token();
-            var token = Tokenprovider?.token;
+            var token = Tokenprovider.token;
             Environment.SetEnvironmentVariable("BOT_TOKEN", "Token"); //Bot Token set for security
             if (string.IsNullOrEmpty(token))
             {
                 return; 
             }
-         
-           
-            discordconifig = new DiscordConfiguration()
+            
+            _discordconifig = new DiscordConfiguration()
             {
                 Intents = DiscordIntents.All,
                 Token = token,
@@ -55,13 +53,13 @@ namespace GameNewsBotApp
                 LoggerFactory = loggerfactory
             };
             
-            Client = new DiscordClient(discordconifig);
+            _client = new DiscordClient(_discordconifig);
             
           //  prefix = new string[] {"!"};
-            var Discord_Bot_Commands = new CommandsNextConfiguration()
+            var discordBotCommands = new CommandsNextConfiguration()
             {
                 
-                StringPrefixes = new string[] { "!","/" },
+                StringPrefixes = new[] { "!","/" },
                 CaseSensitive = false,
                 EnableMentionPrefix = true,
                 EnableDms = true,
@@ -69,84 +67,79 @@ namespace GameNewsBotApp
                 DmHelp = true,
             };
             
-
-            
-
-            commands = Client.UseCommandsNext(Discord_Bot_Commands);
+            Commands = _client.UseCommandsNext(discordBotCommands);
             
             //Basic Commands
-            commands.RegisterCommands<BasicCommands.PingCommand>();
-            commands.RegisterCommands<BasicCommands.Greet_Command>();
-            commands.RegisterCommands<BasicCommands.BotInfo>();
+            Commands.RegisterCommands<BasicCommands.PingCommand>();
+            Commands.RegisterCommands<BasicCommands.Greet_Command>();
+            Commands.RegisterCommands<BasicCommands.BotInfo>();
             
             
             
             //News Commands
-            commands.RegisterCommands<News_Command.Tf2Command>();
-            commands.RegisterCommands<News_Command.MarvelRivals>();
-            commands.RegisterCommands<News_Command.RiskOfRain>();
-            commands.RegisterCommands<News_Command.PalWorld>();
+            Commands.RegisterCommands<News_Command.Tf2Command>();
+            Commands.RegisterCommands<News_Command.MarvelRivals>();
+            Commands.RegisterCommands<News_Command.RiskOfRain>();
+            Commands.RegisterCommands<News_Command.PalWorld>();
             
           
             //Administrator Commands
-            commands.RegisterCommands<AdministratorCommands.KickCommand>();
-            commands.RegisterCommands<AdministratorCommands.BanCommand>();
-            commands.RegisterCommands<AdministratorCommands.TimeoutCommand>();
-            commands.RegisterCommands<AdministratorCommands.SetLogLevelDebug>();
-            commands.RegisterCommands<AdministratorCommands.SetLogLevelInformation>();
+            Commands.RegisterCommands<AdministratorCommands.KickCommand>();
+            Commands.RegisterCommands<AdministratorCommands.BanCommand>();
+            Commands.RegisterCommands<AdministratorCommands.TimeoutCommand>();
+            Commands.RegisterCommands<AdministratorCommands.SetLogLevelDebug>();
+            Commands.RegisterCommands<AdministratorCommands.SetLogLevelInformation>();
             
          
-            await Client.ConnectAsync(); // Connect the client to Discord
-            
+            await _client.ConnectAsync();
                 
-            Client.GuildAvailable += async (sender, eventArgs) =>
+            _client.GuildAvailable += async (sender, eventArgs) =>
             {
-                
-                Log.Information("GuildAvailable Event: CreateChannelsService is creating channels for guild: {GuildName}, {GuildId}", eventArgs.Guild.Name, eventArgs.Guild.Id);
-                await _createChannels.CreateChannelAsync(eventArgs.Guild);
-                await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
+              Log.Debug("GuildAvaialble Event Hanlder Invoked For Guild {GuildName}", eventArgs.Guild.Name);
+          
                     
             };
             
-            Client.GuildCreated += async (sender, eventArgs) =>
+            /*_client.GuildCreated += async (sender, eventArgs) =>
             {
-               /*
-               await _createChannels.CreateChannelAsync(eventArgs.Guild);
-               Log.Information($"GuildCreated Event: Channels created for guild: {eventArgs.Guild.Name}, {string.Join(", ", eventArgs.Guild.Channels.Values)}");
-              
-               
-               await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
-               Log.Information($"GuildCreated Event:Channel information stored for guild: {eventArgs.Guild.Name}, {string.Join(", ", eventArgs.Guild.Channels.Values)}");
-               */
-     
-            };
-            
-            Client.ChannelDeleted += async (sender, eventArgs) =>
-            {
-      
-                Log.Warning($"ChannelDeleted Event: {eventArgs.Channel.Name} in guild: {eventArgs.Guild.Name}. Recreating channels Designated for Channels For news and Logs");
-              
+               Log.Debug("GuildCreated Event Handler");
                 
+       
+     
+            };*/
+            
+            _client.ChannelDeleted += async (sender, eventArgs) =>
+            { 
+                
+            Log.Warning("ChannelDeleted Event Handler: User: {DiscordMemeber} has deleted channels: {Channels}", 
+                eventArgs.Guild.CurrentMember, eventArgs.Channel);
+
+         
                 await _createChannels.CreateChannelAsync(eventArgs.Guild);
-                Log.Information($"ChannelDeleted Event: Channels recreated {eventArgs.Channel.Name} successfully for guild: {eventArgs.Guild.Name}");
-                };
+                await _createChannels.CreateLogChnanel(eventArgs.Guild);
+                _= _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
             
-            Client.ChannelCreated += async (sender, eventArgs) =>
-            {
-                Log.Information($"ChannelCreated Event: {eventArgs.Channel.Name} in guild: {eventArgs.Guild.Name}");
-                Log.Information("News Channels Created...Storing Information");
-                await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);      
             
-                Log.Information("Channels Stored Information Updated"); 
             };
-            
-            Client.ChannelUpdated += async (sender, eventArgs) =>
+            /*_client.ChannelCreated += async (sender, eventArgs) =>
             {
-                await _createChannels.CreateChannelAsync(eventArgs.Guild);
-                await _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
+                
+                Log.Debug("ChannelCreated Event Handler: {DiscordMemeber}");
+                
+                
+           
+            };*/
+            
+            _client.ChannelUpdated += async (sender, eventArgs) =>
+            {   
+             
+                Log.Debug("ChannelUpdated Event Handler: {DiscordUser");
+                
               
             };
-            Log.Information("Bot is Running");   
+            
+            
+            Log.Information("Bot is running in guild {GuildName}", _client.Guilds.Keys.ToString());
             await Task.Delay(-1);  // Wait indefinitely to keep the application running
             
           

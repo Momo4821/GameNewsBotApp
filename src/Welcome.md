@@ -1,45 +1,50 @@
-﻿## Welcome to the Games News Bot Documentation!
+﻿# Welcome
 
-## This documentation will guide you through the features and functionalities of the Games News Bot,a Discord bot designed to fetch and display the latest news about games from the Steam API.
+Welcome to the Game News Bot documentation.
 
+This project is a private Discord bot created for learning and experimentation. It was built to practice C# development, DSharpPlus usage, Steam API integration, and JSON parsing in a controlled environment. 
+The bot is intended for use in Discord servers where the developer has 
+administrator access and is not meant to be deployed as a public bot for general users.
 
+## Purpose
 
+This project exists to help practice:
+- Discord bot creation in C#
+- DSharpPlus command registration
+- HTTP requests to external APIs
+- Working with JSON responses
+- Creating command-based bot flows
+- Learning basic bot structure and event handling
 
+## What the bot does
 
-# Project Purpose
+- Fetches game news from the Steam API
+- Displays news in dedicated Discord channels
+- Supports simple commands such as ping and bot info
+- Restricts some commands to specific game channels
+- Logs activity during testing and debugging
 
-* The purpose of this project is to explore Discord Bot Development in C# using Dsharplus, along with Basic API integration. This bot is not intended for commercial use, and it is provided as a learning resource for developers interested in creating their own Discord bots. 
+## Scope
 
-### This bot was created to practice:
-- Writing Discord bot Commands in C# using DSharpPlus
-- Integrating with external APIs (Steam API)
-- Handling JSON data and parsing it for display in Discord
-- Implementing asynchronous programming in C#
+This is a personal project, not a public bot.
 
+It is intended for:
+- personal Discord servers
+- private development testing
+- learning and experimentation
+- local testing with admin permissions
 
+It is not intended for:
+- public deployment
+- general user setup
+- community server use without permission
+- distributing to other users
 
-### What the Bot Does
-- Fetches the latest news for a Steam game using its AppID
+## Technologies used
 
-- Responds to simple commands in Discord
-
-- Demonstrates defensive programming and null‑checking
-
-- Provides a basic foundation for learning bot architecture
-
-- This project focuses on learning, not feature completeness.
-
-# Technical Overview
-
- - Language: C#
- - Framework: .NET 6.0
- - Discord Library: DSharpPlus
- - API Integration: Steam API
- - Hosting: Local development environment (no cloud hosting)
-
-
-
-# Future Learning Ideas
-- Adding a Database to store user preferences and game news history
-- Saving user preferences for specific games and sending notifications when news is available
-- Implementing a more advanced command system with subcommands and options
+- C#
+- .NET Framework 4.8
+- DSharpPlus
+- Steam Web API
+- Serilog
+- SQLite (planned / in progress)
