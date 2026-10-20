@@ -290,6 +290,12 @@
     <Content Include="AppSettings\appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="src\Chapter_1.md" />
+    <Content Include="src\Chapter_2.md" />
+    <Content Include="src\Chapter_3.md" />
+    <Content Include="src\Chapter_4.md" />
+    <Content Include="src\SUMMARY.md" />
+    <Content Include="src\Welcome.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SQLConnection\Database\" />
