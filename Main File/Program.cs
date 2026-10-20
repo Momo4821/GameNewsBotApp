@@ -1,18 +1,18 @@
 ﻿using DSharpPlus;
 using DSharpPlus.CommandsNext;
-using DSharpPlus.EventArgs;
 using GameNewsBotApp.Commands;
 using GameNewsBotApp.config;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Reflection;
+using System.Linq;
 using System.Threading.Tasks;
-using Castle.Components.DictionaryAdapter.Xml;
-using  GameNewsBotApp.Logging;
+using DSharpPlus.Entities;
+using GameNewsBotApp.CreateChannels;
+using GameNewsBotApp.Logging;
+using GameNewsBotApp.SQLConnection;
 using Serilog;
 
-using GameNewsBotApp.config;
-using GameNewsBotApp.Slash_Commands;
+
 
 namespace GameNewsBotApp
 {
@@ -20,99 +20,130 @@ namespace GameNewsBotApp
 
     internal class Program
     {
-        
-        public static DiscordClient Client { get; set; }
-        
-        
-        public static string [] prefix {get;set;}
-       // public static string [] slash {get;set;}
-       
-
-        public static CommandsNextExtension commands { get; set; }
-
-        
-        static async Task Main(string[] args)
+        private static DiscordClient _client;
+        private static DiscordConfiguration _discordconifig;
+        private static CommandsNextExtension Commands { get; set; }
+        private  static CreateChannelsService _createChannels;
+        private static LoggingData _loggingData;
+        private static DiscordDatabase _discordDatabase;
+      
+       static async Task Main(string[] args)
         {
-            
+         
+            _loggingData = LoggingData.LoggingDataInstance;
+            _discordDatabase = DiscordDatabase.DiscordDatabaseInstance;
+            var loggerfactory = new LoggerFactory().AddSerilog();
+            _createChannels = CreateChannelsService.CreateChannelsServiceInstance;
             var Tokenprovider = new Get_Token();
-            var token = Tokenprovider?.token;
-            var todelete = new Get_Token().delete;
+            var token = Tokenprovider.token;
             Environment.SetEnvironmentVariable("BOT_TOKEN", "Token"); //Bot Token set for security
             if (string.IsNullOrEmpty(token))
             {
                 return; 
             }
             
-            var discordconifig = new DiscordConfiguration()
+            _discordconifig = new DiscordConfiguration()
             {
-
                 Intents = DiscordIntents.All,
                 Token = token,
                 TokenType = TokenType.Bot,
                 AutoReconnect = true,
-              //  MinimumLogLevel = LogLevel.Information,
-               // LogTimestampFormat = "yyyy-MM-dd HH:mm:ss",
-                MessageCacheSize = 1000,
-              
+                MessageCacheSize = 1000,   
+                MinimumLogLevel = LogLevel.Debug,
+                LoggerFactory = loggerfactory
             };
-            Client = new DiscordClient(discordconifig);
             
+            _client = new DiscordClient(_discordconifig);
             
           //  prefix = new string[] {"!"};
-            var Discord_Bot_Commands = new CommandsNextConfiguration()
+            var discordBotCommands = new CommandsNextConfiguration()
             {
                 
-                StringPrefixes = new string[] { "!","/" },
+                StringPrefixes = new[] { "!","/" },
                 CaseSensitive = false,
                 EnableMentionPrefix = true,
                 EnableDms = true,
                 EnableDefaultHelp = false,
-                DmHelp = true
-
+                DmHelp = true,
             };
             
-      
-         
-
-            commands = Client.UseCommandsNext(Discord_Bot_Commands);
-            //Basic Commands
-            commands.RegisterCommands<Basic_Commands.Ping_command>();
-            commands.RegisterCommands<Basic_Commands.Greet_Command>();
+            Commands = _client.UseCommandsNext(discordBotCommands);
             
-        
-            //Admin Commnands
-            commands.RegisterCommands<Administrator_Commands.Kick_Command>();
-            commands.RegisterCommands<Administrator_Commands.Kick_Rules>();
-            commands.RegisterCommands<Administrator_Commands.Ban_Command>();
-            commands.RegisterCommands<Administrator_Commands._timeout_Command>();
-            commands.RegisterCommands<Administrator_Commands.Unban_Command>();
+            //Basic Commands
+            Commands.RegisterCommands<BasicCommands.PingCommand>();
+            Commands.RegisterCommands<BasicCommands.Greet_Command>();
+            Commands.RegisterCommands<BasicCommands.BotInfo>();
+            
+            
             
             //News Commands
-            commands.RegisterCommands<News_Command.TF2_command>();
-            commands.RegisterCommands<News_Command.Marvel_rivals>();
+            Commands.RegisterCommands<News_Command.Tf2Command>();
+            Commands.RegisterCommands<News_Command.MarvelRivals>();
+            Commands.RegisterCommands<News_Command.RiskOfRain>();
+            Commands.RegisterCommands<News_Command.PalWorld>();
             
           
-          //log command
-          commands.RegisterCommands<Administrator_Commands._GetLogs_Command>();
+            //Administrator Commands
+            Commands.RegisterCommands<AdministratorCommands.KickCommand>();
+            Commands.RegisterCommands<AdministratorCommands.BanCommand>();
+            Commands.RegisterCommands<AdministratorCommands.TimeoutCommand>();
+            Commands.RegisterCommands<AdministratorCommands.SetLogLevelDebug>();
+            Commands.RegisterCommands<AdministratorCommands.SetLogLevelInformation>();
+            
+         
+            await _client.ConnectAsync();
+                
+            _client.GuildAvailable += async (sender, eventArgs) =>
+            {
+              Log.Debug("GuildAvaialble Event Hanlder Invoked For Guild {GuildName}", eventArgs.Guild.Name);
           
+                    
+            };
+            
+            /*_client.GuildCreated += async (sender, eventArgs) =>
+            {
+               Log.Debug("GuildCreated Event Handler");
+                
+       
+     
+            };*/
+            
+            _client.ChannelDeleted += async (sender, eventArgs) =>
+            { 
+                
+            Log.Warning("ChannelDeleted Event Handler: User: {DiscordMemeber} has deleted channels: {Channels}", 
+                eventArgs.Guild.CurrentMember, eventArgs.Channel);
 
-          
-          //db commands slash
-            commands.RegisterCommands<SlashCommands.testcommand>();
-
-            await Client.ConnectAsync(); // Connect the client to Discord
+         
+                await _createChannels.CreateChannelAsync(eventArgs.Guild);
+                await _createChannels.CreateLogChnanel(eventArgs.Guild);
+                _= _createChannels.StoreChannelInfomrationAsync(eventArgs.Guild);
+            
+            
+            };
+            /*_client.ChannelCreated += async (sender, eventArgs) =>
+            {
+                
+                Log.Debug("ChannelCreated Event Handler: {DiscordMemeber}");
+                
+                
+           
+            };*/
+            
+            _client.ChannelUpdated += async (sender, eventArgs) =>
+            {   
+             
+                Log.Debug("ChannelUpdated Event Handler: {DiscordUser");
+                
+              
+            };
+            
+            
+            Log.Information("Bot is running in guild {GuildName}", _client.Guilds.Keys.ToString());
             await Task.Delay(-1);  // Wait indefinitely to keep the application running
-
-        }
-        
-        
-        
-        
-      
-        
-        
-        
-        
+            
+          
+    
     }
-
-}
+    }
+    }
