@@ -294,6 +294,7 @@
     <Content Include="src\Chapter_2.md" />
     <Content Include="src\Chapter_3.md" />
     <Content Include="src\Chapter_4.md" />
+    <Content Include="src\Chapter_5.md" />
     <Content Include="src\SUMMARY.md" />
     <Content Include="src\Welcome.md" />
   </ItemGroup>
